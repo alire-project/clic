@@ -6,6 +6,14 @@ authors = ["Alejandro R. Mosteo", "Fabien Chouteau"]
 maintainers = ["alejandro@mosteo.com", "Fabien Chouteau <fabien.chouteau@gmail.com>"]
 maintainers-logins = ["mosteo", "Fabien-Chouteau"]
 licenses = "MIT"
+tags = ["cli", "command-line", "user-input", "tty"]
+website = "https://github.com/alire-project/clic"
+long-description = """
+Command Line Interface Components:
+ - "git like" subcommand handling
+ - TTY color and formatting
+ - User input queries
+"""
 
 # TODO: uncomment for alr 1.1.0
 # [configuration]
