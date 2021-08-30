@@ -8,9 +8,6 @@ maintainers-logins = ["mosteo", "Fabien-Chouteau"]
 licenses = "MIT"
 
 [[depends-on]]
-aaa = "~0.2.1"
+aaa = "~0.2.3"
 simple_logging = "^1.2.0"
 ansiada = "~0.1.0"
-
-[[pins]]
-aaa = { url='https://github.com/mosteo/aaa' }
