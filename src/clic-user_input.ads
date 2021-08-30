@@ -8,9 +8,6 @@ package CLIC.User_Input is
 
    Not_Interactive : aliased Boolean := False;
    --  When not Interactive, instead of asking the user something, use default.
-   --  Currently only used before the first call to `sudo apt` to ask for
-   --  confirmation.
-   --  TODO: remove global eventually
 
    User_Interrupt : exception;
    --  Raised when the user hits Ctrl-D and no further input can be obtained as
