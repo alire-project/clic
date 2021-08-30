@@ -1,0 +1,16 @@
+name = "clic"
+description = "Command Line Interface Components"
+version = "0.1.0"
+
+authors = ["Alejandro R. Mosteo", "Fabien Chouteau"]
+maintainers = ["alejandro@mosteo.com", "Fabien Chouteau <fabien.chouteau@gmail.com>"]
+maintainers-logins = ["mosteo", "Fabien-Chouteau"]
+licenses = "MIT"
+
+[[depends-on]]
+aaa = "~0.2.1"
+simple_logging = "^1.2.0"
+ansiada = "~0.1.0"
+
+[[pins]]
+aaa = { url='https://github.com/mosteo/aaa' }

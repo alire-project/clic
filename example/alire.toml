@@ -1,0 +1,13 @@
+name = "clic_example"
+description = "Shiny new project"
+version = "0.0.0"
+
+authors = ["Fabien Chouteau"]
+maintainers = ["Fabien Chouteau <fabien.chouteau@gmail.com>"]
+maintainers-logins = ["Fabien-Chouteau"]
+
+executables = ["clic_example"]
+[[depends-on]]  # Added by alr
+clic = "~0.1.0"  # Added by alr
+[[pins]]  # Added by alr
+clic = { path='../../clic' }   # Added by alr
