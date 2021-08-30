@@ -7,9 +7,10 @@ maintainers = ["alejandro@mosteo.com", "Fabien Chouteau <fabien.chouteau@gmail.c
 maintainers-logins = ["mosteo", "Fabien-Chouteau"]
 licenses = "MIT"
 
-[configuration]
-disabled = true # CLIC is an Alire dependency using git submodule, so we can't
-                # use the crate configuration here.
+# TODO: uncomment for alr 1.1.0
+# [configuration]
+# disabled = true # CLIC is an Alire dependency using git submodule, so we can't
+#                 # use the crate configuration here.
 
 [[depends-on]]
 aaa = "~0.2.3"
