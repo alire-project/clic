@@ -1,4 +1,7 @@
-with "config/clic_config.gpr";
+with "aaa.gpr";
+with "ansi.gpr";
+with "simple_logging.gpr";
+
 project Clic is
 
    for Library_Name use "Clic";
