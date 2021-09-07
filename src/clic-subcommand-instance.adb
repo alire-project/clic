@@ -707,7 +707,7 @@ package body CLIC.Subcommand.Instance is
          Has_Short : constant Boolean := Short_Switch not in " " | "";
          Has_Long  : constant Boolean := Long_Switch not in " " | "";
       begin
-         if (not Has_Short and not Has_Long) or Help = "" then
+         if not Has_Short and then not Has_Long then
             return;
          end if;
 
