@@ -7,6 +7,7 @@ with CLIC_Ex.Commands.TTY;
 with CLIC_Ex.Commands.User_Input;
 with CLIC_Ex.Commands.Switches_And_Args;
 with CLIC_Ex.Commands.Topics.Example;
+with CLIC_Ex.Commands.Config;
 
 package body CLIC_Ex.Commands is
 
@@ -71,6 +72,7 @@ package body CLIC_Ex.Commands is
 begin
 
    Sub_Cmd.Register (new Sub_Cmd.Builtin_Help);
+   Sub_Cmd.Register (new CLIC_Ex.Commands.Config.Instance);
    Sub_Cmd.Register (new CLIC_Ex.Commands.TTY.Instance);
    Sub_Cmd.Register (new CLIC_Ex.Commands.User_Input.Instance);
    Sub_Cmd.Register (new CLIC_Ex.Commands.Switches_And_Args.Instance);

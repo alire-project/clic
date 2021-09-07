@@ -1,6 +1,7 @@
 with "aaa.gpr";
 with "ansi.gpr";
 with "simple_logging.gpr";
+with "ada_toml.gpr";
 
 project Clic is
 
