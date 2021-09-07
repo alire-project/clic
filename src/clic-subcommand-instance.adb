@@ -168,11 +168,7 @@ package body CLIC.Subcommand.Instance is
    is
       Name : constant Unbounded_String := To_Unbounded_String (Alias);
    begin
-      if Registered_Aliases.Contains (Name) then
-         Registered_Aliases.Replace (Name, Replacement);
-      else
-         Registered_Aliases.Insert (Name, Replacement);
-      end if;
+      Registered_Aliases.Include (Name, Replacement);
    end Set_Alias;
 
    ------------------
