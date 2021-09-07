@@ -82,6 +82,12 @@ package CLIC.Subcommand is
    --  This name is used to identify the sub-command in usage and command line.
    --  E.g. "my_app <name>" will exectute the <name> command.
 
+   function Switches_As_Args (Cmd : Command) return Boolean
+   is abstract;
+   --  Return True to skip sub-command switches parsing and get both the
+   --  sub-command switches and arguments passed to the Args parameter of
+   --  the Execute primitive.
+
    procedure Execute (Cmd  : in out Command;
                       Args :        AAA.Strings.Vector)
    is abstract;

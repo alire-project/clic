@@ -74,6 +74,10 @@ private
    is ("help");
 
    overriding
+   function Switches_As_Args (This : Builtin_Help) return Boolean
+   is (False);
+
+   overriding
    procedure Execute (This : in out Builtin_Help;
                       Args :        AAA.Strings.Vector);
 
