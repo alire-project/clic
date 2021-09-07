@@ -1,3 +1,5 @@
+with AAA.Strings;
+
 with CLIC.TTY;
 with CLIC.User_Input;
 
@@ -71,4 +73,15 @@ begin
    Sub_Cmd.Register (new CLIC_Ex.Commands.TTY.Instance);
    Sub_Cmd.Register (new CLIC_Ex.Commands.User_Input.Instance);
    Sub_Cmd.Register (new CLIC_Ex.Commands.Topics.Example.Instance);
+
+   Sub_Cmd.Set_Alias ("blink", AAA.Strings.Empty_Vector
+                               .Append ("tty")
+                               .Append ("--blink"));
+
+   Sub_Cmd.Set_Alias ("error_alias", AAA.Strings.Empty_Vector
+                                     .Append ("tty")
+                                     .Append ("--test"));
+
+   Sub_Cmd.Set_Alias ("alias_to_switch", AAA.Strings.Empty_Vector
+                                         .Append ("--plop"));
 end CLIC_Ex.Commands;

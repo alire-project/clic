@@ -26,8 +26,15 @@ package body CLIC.Subcommand.Instance is
 
    package Group_Maps is new Ada.Containers.Hashed_Maps
      (Key_Type        => Ada.Strings.Unbounded.Unbounded_String,
-      Element_Type    => AAA.Strings.Vectors.Vector,
-      "="             => AAA.Strings.Vectors."=",
+      Element_Type    => AAA.Strings.Vector,
+      "="             => AAA.Strings."=",
+      Hash            => Ada.Strings.Unbounded.Hash,
+      Equivalent_Keys => Ada.Strings.Unbounded."=");
+
+   package Alias_Maps is new Ada.Containers.Hashed_Maps
+     (Key_Type        => Ada.Strings.Unbounded.Unbounded_String,
+      Element_Type    => AAA.Strings.Vector,
+      "="             => AAA.Strings."=",
       Hash            => Ada.Strings.Unbounded.Hash,
       Equivalent_Keys => Ada.Strings.Unbounded."=");
 
@@ -39,6 +46,9 @@ package body CLIC.Subcommand.Instance is
 
    Registered_Groups : Group_Maps.Map;
    --  A map of list of commands based on their group names
+
+   Registered_Aliases : Alias_Maps.Map;
+   --  A map of aliases and their replacement args
 
    Not_In_A_Group   : AAA.Strings.Vector;
    --  List of commands that are not in a group
@@ -65,6 +75,9 @@ package body CLIC.Subcommand.Instance is
    procedure Put_Line_For_Access (Str : String);
    function To_Argument_List (V : AAA.Strings.Vector)
                               return GNAT.OS_Lib.Argument_List_Access;
+   procedure Process_Aliases
+     with Pre => not Global_Arguments.Is_Empty;
+
 
    -------------------------
    -- Put_Line_For_Access --
@@ -125,8 +138,7 @@ package body CLIC.Subcommand.Instance is
 
          --  Create the group if it doesn't exist yet
          if not Registered_Groups.Contains (Ugroup) then
-            Registered_Groups.Insert (Ugroup,
-                                      AAA.Strings.Vectors.Empty_Vector);
+            Registered_Groups.Insert (Ugroup, AAA.Strings.Empty_Vector);
          end if;
 
          --  Add this command to the list of commands for the group
@@ -147,6 +159,21 @@ package body CLIC.Subcommand.Instance is
          Registered_Topics.Insert (Name, Topic);
       end if;
    end Register;
+
+   ---------------
+   -- Set_Alias --
+   ---------------
+
+   procedure Set_Alias (Alias : Identifier; Replacement : AAA.Strings.Vector)
+   is
+      Name : constant Unbounded_String := To_Unbounded_String (Alias);
+   begin
+      if Registered_Aliases.Contains (Name) then
+         Registered_Aliases.Replace (Name, Replacement);
+      else
+         Registered_Aliases.Insert (Name, Replacement);
+      end if;
+   end Set_Alias;
 
    ------------------
    -- What_Command --
@@ -280,6 +307,33 @@ package body CLIC.Subcommand.Instance is
       Table.Print (Separator => "  ", Put_Line =>  Put_Line_For_Access'Access);
    end Display_Valid_Topics;
 
+   ---------------------
+   -- Display_Aliases --
+   ---------------------
+
+   procedure Display_Aliases is
+      Tab   : constant String (1 .. 1) := (others => ' ');
+      Table : AAA.Table_IO.Table;
+      use Alias_Maps;
+
+   begin
+      if Registered_Aliases.Is_Empty then
+         return;
+      end if;
+
+      Put_Line (TTY_Chapter ("ALIASES"));
+
+      for Elt in Registered_Aliases.Iterate loop
+         Table.New_Row;
+         Table.Append (Tab);
+         Table.Append (TTY_Description (To_String (Key (Elt))));
+         Table.Append (Tab);
+         Table.Append (Element (Elt).Flatten);
+      end loop;
+
+      Table.Print (Separator => "  ", Put_Line =>  Put_Line_For_Access'Access);
+   end Display_Aliases;
+
    -------------------
    -- Display_Usage --
    -------------------
@@ -379,6 +433,7 @@ package body CLIC.Subcommand.Instance is
       Display_Global_Options;
       Display_Valid_Commands;
       Display_Valid_Topics;
+      Display_Aliases;
    end Display_Usage;
 
    ---------------------------
@@ -495,6 +550,26 @@ package body CLIC.Subcommand.Instance is
          Error_Exit (1);
    end Parse_Global_Switches;
 
+   ---------------------
+   -- Process_Aliases --
+   ---------------------
+
+   procedure Process_Aliases is
+      Name : constant String := Global_Arguments.First_Element;
+      Uname : constant Unbounded_String := To_Unbounded_String (Name);
+   begin
+
+      --  If we have a valid alias
+      if Registered_Aliases.Contains (Uname) then
+
+         --  Remove the alias from the arguments
+         Global_Arguments.Delete_First;
+
+         --  And replace it by the alias value
+         Global_Arguments.Prepend (Registered_Aliases (Uname));
+      end if;
+   end Process_Aliases;
+
    -------------
    -- Execute --
    -------------
@@ -532,6 +607,9 @@ package body CLIC.Subcommand.Instance is
          Display_Global_Options;
          Error_Exit (1);
       end if;
+
+      --  Take care of a potential alias
+      Process_Aliases;
 
       --  Dispatch to the appropriate command
 
@@ -781,11 +859,16 @@ package body CLIC.Subcommand.Instance is
       elsif Registered_Topics.Contains (Ukey) then
          Put_Line (TTY_Chapter (Registered_Topics.Element (Ukey).Title));
          Format (Registered_Topics.Element (Ukey).Content);
+      elsif Registered_Aliases.Contains (Ukey) then
+         Put_Line ("'" & Keyword & "' is an alias for: '" &
+                     Main_Command_Name & " " &
+                     Registered_Aliases.Element (Ukey).Flatten & "'");
       else
          Put_Error ("No help found for: " & Keyword);
          Display_Global_Options;
          Display_Valid_Commands;
          Display_Valid_Topics;
+         Display_Aliases;
          Error_Exit (1);
       end if;
    end Display_Help;
@@ -833,6 +916,7 @@ package body CLIC.Subcommand.Instance is
          Display_Global_Options;
          Display_Valid_Commands;
          Display_Valid_Topics;
+         Display_Aliases;
          Error_Exit (1);
       end if;
 

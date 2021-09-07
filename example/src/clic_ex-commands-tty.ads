@@ -29,8 +29,7 @@ package CLIC_Ex.Commands.TTY is
    overriding
    procedure Setup_Switches
      (Cmd    : in out Instance;
-      Config : in out CLIC.Subcommand.Switches_Configuration)
-   is null;
+      Config : in out CLIC.Subcommand.Switches_Configuration);
 
    overriding
    function Short_Description (Cmd : Instance) return String
@@ -45,6 +44,8 @@ private
 
    type Instance
    is new CLIC.Subcommand.Command
-   with null record;
+   with record
+      Blink : aliased Boolean;
+   end record;
 
 end CLIC_Ex.Commands.TTY;
