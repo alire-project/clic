@@ -23,10 +23,13 @@ package CLIC.Config with Preelaborate is
      with Dynamic_Predicate => Is_Valid_Config_Key (Config_Key);
 
    type Instance is tagged limited private;
+   pragma Preelaborable_Initialization (Instance);
 
    type Check_Import is
      access function (Key : Config_Key; Value : TOML.TOML_Value)
                       return Boolean;
+   --  Return False when a Key/Value combination is not valid. Can be used to
+   --  check formating of string value like email address for instance.
 
    procedure Import (This   : in out Instance;
                      Table  :        TOML.TOML_Value;
@@ -78,6 +81,11 @@ package CLIC.Config with Preelaborate is
    --  not as an Float, an error message is displayed and the Default value
    --  is returned.
 
+   procedure Clear (This : in out Instance);
+   --  Remove all configuration keys
+
+   function Image (Val : TOML.TOML_Value) return String;
+
 private
 
    generic
@@ -111,8 +119,6 @@ private
       Element_Type    => Config_Value,
       Hash            => Ada.Strings.Unbounded.Hash,
       Equivalent_Keys => Ada.Strings.Unbounded."=");
-
-   function Image (Val : TOML.TOML_Value) return String;
 
    function "+" (Source : String) return Ada.Strings.Unbounded.Unbounded_String
                  renames Ada.Strings.Unbounded.To_Unbounded_String;

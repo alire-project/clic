@@ -16,11 +16,12 @@ package body CLIC.Config.Load is
 
    procedure From_TOML (C      : in out CLIC.Config.Instance;
                         Origin :        String;
-                        Path   :        String)
+                        Path   :        String;
+                        Check  :        Check_Import := null)
    is
       Table : TOML_Value := Load_TOML_File (Path);
    begin
-      C.Import (Table, Origin);
+      C.Import (Table, Origin, Check => Check);
    end From_TOML;
 
    --------------------
