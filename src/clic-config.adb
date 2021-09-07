@@ -186,6 +186,15 @@ package body CLIC.Config is
       return Get_With_Default_Int (This, Key, Default);
    end Get;
 
+   -----------
+   -- Clear --
+   -----------
+
+   procedure Clear (This : in out Instance) is
+   begin
+      This.Config_Map.Clear;
+   end Clear;
+
    --------------------------
    -- Get_With_Default_Gen --
    --------------------------
@@ -277,8 +286,7 @@ package body CLIC.Config is
          when TOML_String =>
             return Val.As_String;
          when others =>
-            --  This should have been filtered during import
-            raise Program_Error;
+            return "";
       end case;
    end Image;
 

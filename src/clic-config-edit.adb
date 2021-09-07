@@ -63,6 +63,7 @@ package body CLIC.Config.Edit is
    begin
       if not Table.Has (Id) then
          --  The key doesn't exist
+         Trace.Error ("Configuration key not defined");
          return False;
       end if;
 
@@ -129,6 +130,7 @@ package body CLIC.Config.Edit is
 
       if Table.Is_Null then
          --  The configuration file doesn't exist or is not valid
+         Trace.Error ("configuration file doesn't exist or is not valid");
          return False;
       end if;
 
@@ -160,7 +162,7 @@ package body CLIC.Config.Edit is
          return False;
       end if;
 
-      if Check /= null and then Check (Key, To_Add) then
+      if Check /= null and then not Check (Key, To_Add) then
          return False;
       end if;
 
