@@ -635,7 +635,7 @@ package body CLIC.Subcommand.Instance is
             Error_Exit (1);
          end if;
 
-         if not Cmd.Switches_As_Args then
+         if Cmd.Switches_As_Args then
 
             --  Skip sub-command switch parsing as requested by the command
             Sub_Arguments := Global_Arguments;
