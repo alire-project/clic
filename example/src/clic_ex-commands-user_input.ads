@@ -13,6 +13,10 @@ package CLIC_Ex.Commands.User_Input is
    is ("user_input");
 
    overriding
+   function Switches_As_Args (This : Instance) return Boolean
+   is (False);
+
+   overriding
    procedure Execute (Cmd  : in out Instance;
                       Args :        AAA.Strings.Vector);
 

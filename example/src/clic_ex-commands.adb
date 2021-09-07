@@ -5,6 +5,7 @@ with CLIC.User_Input;
 
 with CLIC_Ex.Commands.TTY;
 with CLIC_Ex.Commands.User_Input;
+with CLIC_Ex.Commands.Switches_And_Args;
 with CLIC_Ex.Commands.Topics.Example;
 
 package body CLIC_Ex.Commands is
@@ -72,6 +73,7 @@ begin
    Sub_Cmd.Register (new Sub_Cmd.Builtin_Help);
    Sub_Cmd.Register (new CLIC_Ex.Commands.TTY.Instance);
    Sub_Cmd.Register (new CLIC_Ex.Commands.User_Input.Instance);
+   Sub_Cmd.Register (new CLIC_Ex.Commands.Switches_And_Args.Instance);
    Sub_Cmd.Register (new CLIC_Ex.Commands.Topics.Example.Instance);
 
    Sub_Cmd.Set_Alias ("blink", AAA.Strings.Empty_Vector

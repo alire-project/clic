@@ -639,25 +639,33 @@ package body CLIC.Subcommand.Instance is
             Error_Exit (1);
          end if;
 
-         --  Initialize a new switch parser that will only see the new
-         --  sub-command line (i.e. the remaining args and switches after
-         --  global parsing).
-         Initialize_Option_Scan (Parser, Sub_Cmd_Line);
+         if not Cmd.Switches_As_Args then
 
-         --  Parse sub-command line, invalid switches will raise an exception
-         Getopt (Command_Config.GNAT_Cfg, Parser => Parser);
+            --  Skip sub-command switch parsing as requested by the command
+            Sub_Arguments := Global_Arguments;
+         else
 
-         --  Make a vector of arguments for the sub-command (every element that
-         --  was not a switch in the sub-command line).
-         loop
-            declare
-               Arg : constant String :=
-                 GNAT.Command_Line.Get_Argument (Parser => Parser);
-            begin
-               exit when Arg = "";
-               Sub_Arguments.Append (Arg);
-            end;
-         end loop;
+            --  Initialize a new switch parser that will only see the new
+            --  sub-command line (i.e. the remaining args and switches after
+            --  global parsing).
+            Initialize_Option_Scan (Parser, Sub_Cmd_Line);
+
+            --  Parse sub-command line, invalid switches will raise an
+            --  exception
+            Getopt (Command_Config.GNAT_Cfg, Parser => Parser);
+
+            --  Make a vector of arguments for the sub-command (every element that
+            --  was not a switch in the sub-command line).
+            loop
+               declare
+                  Arg : constant String :=
+                    GNAT.Command_Line.Get_Argument (Parser => Parser);
+               begin
+                  exit when Arg = "";
+                  Sub_Arguments.Append (Arg);
+               end;
+            end loop;
+         end if;
 
          --  We don't need this anymore
          GNAT.OS_Lib.Free (Sub_Cmd_Line);
