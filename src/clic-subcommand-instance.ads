@@ -37,6 +37,11 @@ package CLIC.Subcommand.Instance is
    procedure Register (Topic : not null Help_Topic_Access);
    --  Register an help topic
 
+   procedure Set_Alias (Alias : Identifier; Replacement : AAA.Strings.Vector);
+   --  Define Alias such that "<Main_Command_Name> <Alias> <Extra_Args>" will
+   --  be replaced by "<Main_Command_Name> <Replacement> <Extra_Args>".
+   --  If Alias is already set, it will be silently replaced.
+
    procedure Execute;
    --  Parse the command line and execute a sub-command or display help/usage
    --  depending on command line args.

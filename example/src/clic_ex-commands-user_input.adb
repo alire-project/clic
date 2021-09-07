@@ -14,10 +14,16 @@ package body CLIC_Ex.Commands.User_Input is
    -- Execute --
    -------------
 
-   overriding procedure Execute
-     (Cmd : in out Instance; Args : AAA.Strings.Vector)
+   overriding
+   procedure Execute (Cmd : in out Instance;
+                      Args : AAA.Strings.Vector)
    is
    begin
+      if not Args.Is_Empty then
+         Put_Line (Cmd.Name & " takes no arguments");
+         GNAT.OS_Lib.OS_Exit (1);
+      end if;
+
       declare
          Answer : Answer_Kind;
       begin
