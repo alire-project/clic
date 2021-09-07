@@ -14,7 +14,7 @@ package CLIC_Ex.Commands.Switches_And_Args is
 
    overriding
    function Switches_As_Args (This : Instance) return Boolean
-   is (False);
+   is (True);
 
    overriding
    procedure Execute (Cmd  : in out Instance;
