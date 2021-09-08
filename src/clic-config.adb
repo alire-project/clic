@@ -15,15 +15,15 @@ package body CLIC.Config is
 
    function Image (F : TOML.Any_Float) return String;
 
-   ------------
-   -- Import --
-   ------------
+   ----------------------
+   -- Import_Recursive --
+   ----------------------
 
-   procedure Import (This   : in out Instance;
-                     Table  :        TOML.TOML_Value;
-                     Origin :        String;
-                     Check  :        Check_Import := null;
-                     Prefix :        String := "")
+   procedure Import_Recursive (This   : in out Instance;
+                               Table  :        TOML.TOML_Value;
+                               Origin :        String;
+                               Check  :        Check_Import := null;
+                               Prefix :        String := "")
    is
    begin
       if Table = No_TOML_Value
@@ -46,7 +46,7 @@ package body CLIC.Config is
             elsif Ent.Value.Kind = TOML_Table then
 
                --  Recursive call on the table
-               This.Import (Ent.Value, Origin, Check, Key);
+               Import_Recursive (This, Ent.Value, Origin, Check, Key);
             else
 
                Trace.Debug ("Load config key: '" & Key & "' = '" &
@@ -73,6 +73,19 @@ package body CLIC.Config is
             end if;
          end;
       end loop;
+   end Import_Recursive;
+
+   ------------
+   -- Import --
+   ------------
+
+   procedure Import (This   : in out Instance;
+                     Table  :        TOML.TOML_Value;
+                     Origin :        String;
+                     Check  :        Check_Import := null)
+   is
+   begin
+      Import_Recursive (This, Table, Origin, Check);
    end Import;
 
    -------------

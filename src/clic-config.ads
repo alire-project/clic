@@ -34,8 +34,7 @@ package CLIC.Config with Preelaborate is
    procedure Import (This   : in out Instance;
                      Table  :        TOML.TOML_Value;
                      Origin :        String;
-                     Check  :        Check_Import := null;
-                     Prefix :        String := "");
+                     Check  :        Check_Import := null);
    --  Import configuration from the TOML table.
    --
    --  The Origin parameter is used in error messages and when listing config
