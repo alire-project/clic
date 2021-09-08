@@ -25,7 +25,7 @@ package body CLIC_Ex.Commands.Config is
 
    begin
       CLIC.Config.Load.From_TOML (Cmd.Config, "global", "global_config.toml");
-      CLIC.Config.Load.From_TOML (Cmd.Config, "global", "local_config.toml");
+      CLIC.Config.Load.From_TOML (Cmd.Config, "local", "local_config.toml");
 
       --  Check no multi-action
       Enabled := Enabled + (if Cmd.List then 1 else 0);
