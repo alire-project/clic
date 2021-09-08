@@ -37,6 +37,16 @@ package CLIC.Config with Preelaborate is
                      Check  :        Check_Import := null;
                      Prefix :        String := "");
    --  Import configuration from the TOML table.
+   --
+   --  The Origin parameter is used in error messages and when listing config
+   --  values to help the user identify the origin of the value. It can be just
+   --  a word (e.g. local vs global), or the full path to the config file.
+   --
+   --  When a Check function is provided, it will be called for each imported
+   --  config key/value. If Check return False, the value is ignored and not
+   --  imported in the configuration. Import will print an Error message saying
+   --  that the key/value is ignored. In addition the Check function can also
+   --  print an error message explaining why the key/value is invalid.
 
    function Defined (This : Instance; Key : Config_Key) return Boolean;
    --  Return True if a value is defined for the given key

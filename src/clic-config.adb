@@ -61,9 +61,6 @@ package body CLIC.Config is
                                  Origin & "'");
                   Trace.Error ("'" & Key & "' is ignored");
                elsif Check /= null and then not Check (Key, Ent.Value) then
-                  Trace.Error ("Invalid value for key '" & Key &
-                                 "' in configuration file '" &
-                                 Origin & "'");
                   Trace.Error ("'" & Key & "' is ignored");
                else
                   --  Insert the config value, potentially replacing a previous
