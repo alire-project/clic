@@ -2,6 +2,7 @@ with Ada.Text_IO;
 with Ada.Directories;
 
 with AAA.Strings;
+with AAA.Directories;
 
 with CLIC.Config.Load;
 
@@ -94,7 +95,6 @@ package body CLIC.Config.Edit is
                           return Boolean
    is
       use AAA.Strings;
-
       Id   : constant String := Split (Key, '.', Raises => False);
       Leaf : constant Boolean := Id = Key;
    begin
@@ -125,7 +125,12 @@ package body CLIC.Config.Edit is
    -----------
 
    function Unset (Path : String; Key : Config_Key) return Boolean is
-      Table : constant TOML_Value := Load.Load_TOML_File (Path);
+      use AAA.Directories;
+
+      Tmp : Replacer := New_Replacement (File       => Path,
+                                         Backup     => False);
+
+      Table : constant TOML_Value := Load.Load_TOML_File (Tmp.Editable_Name);
    begin
 
       if Table.Is_Null then
@@ -138,7 +143,9 @@ package body CLIC.Config.Edit is
          return False;
       end if;
 
-      Write_Config_File (Table, Path);
+      Write_Config_File (Table, Tmp.Editable_Name);
+
+      Tmp.Replace;
 
       return True;
    end Unset;
@@ -153,7 +160,12 @@ package body CLIC.Config.Edit is
                  Check : Check_Import := null)
                  return Boolean
    is
-      Table : TOML_Value := CLIC.Config.Load.Load_TOML_File (Path);
+      use AAA.Directories;
+
+      Tmp : Replacer := New_Replacement (File       => Path,
+                                         Backup     => False);
+
+      Table : TOML_Value := Load.Load_TOML_File (Tmp.Editable_Name);
 
       To_Add : constant TOML_Value := To_TOML_Value (Value);
    begin
@@ -176,7 +188,9 @@ package body CLIC.Config.Edit is
          return False;
       end if;
 
-      Write_Config_File (Table, Path);
+      Write_Config_File (Table, Tmp.Editable_Name);
+
+      Tmp.Replace;
 
       return True;
    end Set;
