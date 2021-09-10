@@ -127,8 +127,9 @@ package body CLIC.Config.Edit is
    function Unset (Path : String; Key : Config_Key) return Boolean is
       use AAA.Directories;
 
-      Tmp : Replacer := New_Replacement (File       => Path,
-                                         Backup     => False);
+      Tmp : Replacer := New_Replacement (File              => Path,
+                                         Backup            => False,
+                                         Allow_No_Original => True);
 
       Table : constant TOML_Value := Load.Load_TOML_File (Tmp.Editable_Name);
    begin
@@ -162,8 +163,9 @@ package body CLIC.Config.Edit is
    is
       use AAA.Directories;
 
-      Tmp : Replacer := New_Replacement (File       => Path,
-                                         Backup     => False);
+      Tmp : Replacer := New_Replacement (File              => Path,
+                                         Backup            => False,
+                                         Allow_No_Original => True);
 
       Table : TOML_Value := Load.Load_TOML_File (Tmp.Editable_Name);
 
