@@ -42,15 +42,23 @@ package CLIC.Subcommand.Instance is
    --  be replaced by "<Main_Command_Name> <Replacement> <Extra_Args>".
    --  If Alias is already set, it will be silently replaced.
 
-   procedure Execute;
+   procedure Execute
+     (Command_Line : AAA.Strings.Vector := AAA.Strings.Empty_Vector);
    --  Parse the command line and execute a sub-command or display help/usage
    --  depending on command line args.
+   --
+   --  If Command_Line is not empty it will used instead of the actual command
+   --  line arguments from Ada.Command_Line.
 
-   procedure Parse_Global_Switches;
+   procedure Parse_Global_Switches
+     (Command_Line : AAA.Strings.Vector := AAA.Strings.Empty_Vector);
    --  Optional. Call this procedure before Execute to get only global switches
    --  parsed. This can be useful to check the values of global switches before
    --  running a sub-command or change the behavior of your program based on
    --  these (e.g. verbosity, output color, etc.).
+   --
+   --  If Command_Line is not empty it will used instead of the actual command
+   --  line arguments from Ada.Command_Line.
 
    function What_Command return String;
 

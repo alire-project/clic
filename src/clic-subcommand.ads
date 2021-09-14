@@ -175,4 +175,6 @@ private
       Info     : Switch_Info_Vectors.Vector;
    end record;
 
+   procedure Clear (This : in out Switches_Configuration);
+
 end CLIC.Subcommand;
