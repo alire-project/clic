@@ -52,7 +52,8 @@ project Clic is
            ("-gnatyg",   -- GNAT Style checks
             "-gnaty-d",  -- Disable no DOS line terminators
             "-gnatyM80", -- Maximum line length
-            "-gnatyO");  -- Overriding subprograms explicitly marked as such
+            "-gnatyO",  -- Overriding subprograms explicitly marked as such
+            "-gnaty-s"); -- Relax fwd decl
       when others => null;
    end case;
 

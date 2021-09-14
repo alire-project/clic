@@ -19,5 +19,4 @@ package CLIC.Config.Edit is
    --  configuration file is not modified. In addition the Check function
    --  can print an error message explaining why the key/value is invalid.
 
-
 end CLIC.Config.Edit;
