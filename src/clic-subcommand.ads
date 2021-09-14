@@ -175,12 +175,4 @@ private
       Info     : Switch_Info_Vectors.Vector;
    end record;
 
-   function Verify_No_Duplicates (A, B : Switches_Configuration)
-                                  return Boolean;
-   --  Returns True if there are no duplicates.
-   --  Check that no switch is given twice in Config. This is used to ensure
-   --  that command switches are not stepping on global switches, which would
-   --  lead to some undefined behavior. This manual check is necessary because
-   --  the GNAT library does not perform it.
-
 end CLIC.Subcommand;
