@@ -60,8 +60,6 @@ package body CLIC.Subcommand.Instance is
 
    Help_Requested  : Boolean;
 
-   First_Nonswitch : Integer;
-
    Global_Config : Switches_Configuration;
 
    Global_Parsing_Done : Boolean := False;
@@ -77,7 +75,6 @@ package body CLIC.Subcommand.Instance is
                               return GNAT.OS_Lib.Argument_List_Access;
    procedure Process_Aliases
      with Pre => not Global_Arguments.Is_Empty;
-
 
    -------------------------
    -- Put_Line_For_Access --
@@ -201,20 +198,6 @@ package body CLIC.Subcommand.Instance is
          return Global_Arguments.First_Element;
       end if;
    end What_Command;
-
-   --------------------
-   -- Fill_Arguments --
-   --------------------
-
-   procedure Fill_Arguments (Switch    : String;
-                             Parameter : String;
-                             Section   : String)
-   is
-      pragma Unreferenced (Parameter);
-      pragma Unreferenced (Section);
-   begin
-      Global_Arguments.Append (Switch);
-   end Fill_Arguments;
 
    ----------------------------
    -- Display_Valid_Commands --
@@ -438,40 +421,6 @@ package body CLIC.Subcommand.Instance is
 
    procedure Parse_Global_Switches is
 
-      ---------------------------
-      -- Check_First_Nonswitch --
-      ---------------------------
-
-      function Check_First_Nonswitch return Integer is
-         use Ada.Command_Line;
-         First_Nonswitch : Integer := 0;
-         --  Used to store the first argument that doesn't start with '-';
-         --  that would be the command for which help is being asked.
-      begin
-         for I in 1 .. Argument_Count loop
-            declare
-               Arg : constant String := Ada.Command_Line.Argument (I);
-            begin
-               if First_Nonswitch = 0 and then Arg (Arg'First) /= '-' then
-                  First_Nonswitch := I;
-               end if;
-            end;
-         end loop;
-
-         return First_Nonswitch;
-      end Check_First_Nonswitch;
-
-      --------------------
-      -- Check_For_Help --
-      --------------------
-
-      function Check_For_Help return Boolean is
-         use Ada.Command_Line;
-      begin
-         return (for some I in 1 .. Argument_Count =>
-                   Ada.Command_Line.Argument (I) in "-h" | "--help");
-      end Check_For_Help;
-
       ----------------------
       -- Filter_Arguments --
       ----------------------
@@ -481,20 +430,27 @@ package body CLIC.Subcommand.Instance is
 
          Arguments : AAA.Strings.Vector;
       begin
+
+         --  GNAT switch handling intercepts -h/--help. To have the same output
+         --  for '<main> -h command' and '<main> help command', we do manual
+         --  handling first in search of a -h/--help:
+
          for I in 1 .. Argument_Count loop
             declare
                Arg : constant String := Ada.Command_Line.Argument (I);
             begin
                if Arg not in "-h" | "--help" then
                   Arguments.Append (Arg);
+               else
+                  Help_Requested := True;
                end if;
             end;
          end loop;
          return To_Argument_List (Arguments);
       end Filter_Arguments;
 
-      Arguments        : GNAT.OS_Lib.Argument_List_Access;
-      Arguments_Parser : Opt_Parser;
+      Arguments : GNAT.OS_Lib.Argument_List_Access;
+      Parser    : Opt_Parser;
    begin
 
       --  Only do the global parsing once
@@ -504,34 +460,32 @@ package body CLIC.Subcommand.Instance is
          Global_Parsing_Done := True;
       end if;
 
-      --  GNAT switch handling intercepts -h/--help. To have the same output
-      --  for '<main> -h command' and '<main> help command', we do manual
-      --  handling first in search of a -h/--help:
-      Help_Requested  := Check_For_Help;
-      First_Nonswitch := Check_First_Nonswitch;
-
       --  We filter the command line arguments to remove -h/--help that would
       --  trigger the Getopt automatic help system.
       Arguments := Filter_Arguments;
 
       Set_Global_Switches (Global_Config);
 
-      --  To avoid erroring on command-specific switches we add the wildcard.
-      --  However, if help was requested, we don't want the "[any string]" text
-      --  to be displayed by Getopt below, so in that case we bypass it.
-      if not Help_Requested then
-         Define_Switch (Global_Config, "*");
-      end if;
+      --  Run the parser first with only the global switches. With the
+      --  Stop_At_First_Non_Switch => True the parser will stop at the first
+      --  argument, witch is supposed to be a sub-command, topic, or alias.
+      --  The rest of the command line args are added to the Global_Arguments.
+      Initialize_Option_Scan (Parser,
+                              Arguments,
+                              Stop_At_First_Non_Switch => True);
 
-      --  Run the parser first with only the global switches. With the wildcard
-      --  above (Define_Switch (Global_Config, "*")) all the unknown switches
-      --  and arguments go through the Fill_Arguments callback, and therefore
-      --  are added to Global_Arguments. This includes the command name and all
-      --  potential command specific switches and arguments.
-      Initialize_Option_Scan (Arguments_Parser, Arguments);
-      Getopt (Global_Config.GNAT_Cfg,
-              Callback => Fill_Arguments'Unrestricted_Access,
-              Parser   => Arguments_Parser);
+      Getopt (Global_Config.GNAT_Cfg, Parser => Parser);
+
+      --  Make a vector of arguments starting from the first non switch
+      loop
+         declare
+            Arg : constant String :=
+              GNAT.Command_Line.Get_Argument (Parser => Parser);
+         begin
+            exit when Arg = "";
+            Global_Arguments.Append (Arg);
+         end;
+      end loop;
 
       GNAT.OS_Lib.Free (Arguments);
 
@@ -575,33 +529,14 @@ package body CLIC.Subcommand.Instance is
 
       Parse_Global_Switches;
 
-      --  Show either general or specific help
-      if Help_Requested then
-         if First_Nonswitch > 0 then
-            Display_Help (Ada.Command_Line.Argument (First_Nonswitch));
-            Error_Exit (0);
-         else
-            null;
-            --  Nothing to do; later on GNAT switch processing will catch
-            --  the -h/--help and display the general help.
-         end if;
-      end if;
-
       if Global_Arguments.Is_Empty then
          --  We should at least have the sub-command name in the arguments
          Display_Usage;
          Error_Exit (1);
 
-      elsif AAA.Strings.Has_Prefix (Global_Arguments.First_Element, "-") then
-
-         --  If the first Global_Arguments is a switch (starts with '-'),
-         --  that means it is an invalid global switch. It is in the arguments
-         --  because of the wildcard: Define_Switch (Global_Config, "*");
-
-         Put_Error ("Unrecognized global option: " &
-                      Global_Arguments.First_Element);
-         Display_Global_Options;
-         Error_Exit (1);
+      elsif Help_Requested then
+         Display_Help (Global_Arguments.First_Element);
+         Error_Exit (0);
       end if;
 
       --  Take care of a potential alias
@@ -629,12 +564,6 @@ package body CLIC.Subcommand.Instance is
          --  global switches because they have been parsed before.
          Cmd.Setup_Switches (Command_Config);
 
-         --  Ensure Command has not set a switch that is already global:
-         if not Verify_No_Duplicates (Command_Config, Global_Config) then
-            Put_Error ("Duplicate switch definition detected");
-            Error_Exit (1);
-         end if;
-
          if Cmd.Switches_As_Args then
 
             --  Skip sub-command switch parsing as requested by the command
@@ -650,8 +579,8 @@ package body CLIC.Subcommand.Instance is
             --  exception
             Getopt (Command_Config.GNAT_Cfg, Parser => Parser);
 
-            --  Make a vector of arguments for the sub-command (every element that
-            --  was not a switch in the sub-command line).
+            --  Make a vector of arguments for the sub-command (every element
+            --  that was not a switch in the sub-command line).
             loop
                declare
                   Arg : constant String :=
