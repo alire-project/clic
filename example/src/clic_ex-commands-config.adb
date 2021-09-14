@@ -10,7 +10,7 @@ package body CLIC_Ex.Commands.Config is
 
    package Trace renames Simple_Logging;
 
-  -------------
+   -------------
    -- Execute --
    -------------
 
@@ -110,7 +110,7 @@ package body CLIC_Ex.Commands.Config is
                GNAT.OS_Lib.OS_Exit (1);
             end if;
 
-            if not Clic.Config.Edit.Set (Config_Path, Key, Val) then
+            if not CLIC.Config.Edit.Set (Config_Path, Key, Val) then
                GNAT.OS_Lib.OS_Exit (1);
             end if;
          end;
@@ -130,7 +130,7 @@ package body CLIC_Ex.Commands.Config is
                GNAT.OS_Lib.OS_Exit (1);
             end if;
 
-            if not Clic.Config.Edit.Unset (Config_Path, Key) then
+            if not CLIC.Config.Edit.Unset (Config_Path, Key) then
                GNAT.OS_Lib.OS_Exit (1);
             end if;
          end;

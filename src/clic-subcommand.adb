@@ -138,4 +138,14 @@ package body CLIC.Subcommand is
                                 To_Unbounded_String (Argument)));
    end Add;
 
+   -----------
+   -- Clear --
+   -----------
+
+   procedure Clear (This : in out Switches_Configuration) is
+   begin
+      GNAT.Command_Line.Free (This.GNAT_Cfg);
+      This.Info.Clear;
+   end Clear;
+
 end CLIC.Subcommand;

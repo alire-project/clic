@@ -419,7 +419,24 @@ package body CLIC.Subcommand.Instance is
    -- Parse_Global_Switches --
    ---------------------------
 
-   procedure Parse_Global_Switches is
+   procedure Parse_Global_Switches
+     (Command_Line : AAA.Strings.Vector := AAA.Strings.Empty_Vector)
+   is
+
+      ----------------------
+      -- Ada_Command_Line --
+      ----------------------
+
+      function Ada_Command_Line return AAA.Strings.Vector is
+         use Ada.Command_Line;
+
+         Result : AAA.Strings.Vector;
+      begin
+         for I in 1 .. Argument_Count loop
+            Result.Append (Ada.Command_Line.Argument (I));
+         end loop;
+         return Result;
+      end Ada_Command_Line;
 
       ----------------------
       -- Filter_Arguments --
@@ -429,22 +446,19 @@ package body CLIC.Subcommand.Instance is
          use Ada.Command_Line;
 
          Arguments : AAA.Strings.Vector;
-      begin
 
+         Cmd_Line : constant AAA.Strings.Vector :=
+           (if Command_Line.Is_Empty then Ada_Command_Line else Command_Line);
+
+      begin
          --  GNAT switch handling intercepts -h/--help. To have the same output
          --  for '<main> -h command' and '<main> help command', we do manual
-         --  handling first in search of a -h/--help:
-
-         for I in 1 .. Argument_Count loop
-            declare
-               Arg : constant String := Ada.Command_Line.Argument (I);
-            begin
-               if Arg not in "-h" | "--help" then
-                  Arguments.Append (Arg);
-               else
-                  Help_Requested := True;
-               end if;
-            end;
+         for Arg of Cmd_Line loop
+            if Arg not in "-h" | "--help" then
+               Arguments.Append (Arg);
+            else
+               Help_Requested := True;
+            end if;
          end loop;
          return To_Argument_List (Arguments);
       end Filter_Arguments;
@@ -454,9 +468,12 @@ package body CLIC.Subcommand.Instance is
    begin
 
       --  Only do the global parsing once
-      if Global_Parsing_Done then
+      if Global_Parsing_Done and then Command_Line.Is_Empty then
          return;
       else
+         Global_Arguments.Clear;
+         Help_Requested := False;
+         Clear (Global_Config);
          Global_Parsing_Done := True;
       end if;
 
@@ -524,10 +541,12 @@ package body CLIC.Subcommand.Instance is
    -- Execute --
    -------------
 
-   procedure Execute is
+   procedure Execute
+     (Command_Line : AAA.Strings.Vector := AAA.Strings.Empty_Vector)
+   is
    begin
 
-      Parse_Global_Switches;
+      Parse_Global_Switches (Command_Line);
 
       if Global_Arguments.Is_Empty then
          --  We should at least have the sub-command name in the arguments
