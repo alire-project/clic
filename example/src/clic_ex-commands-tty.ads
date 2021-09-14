@@ -43,7 +43,6 @@ package CLIC_Ex.Commands.TTY is
    function Usage_Custom_Parameters (Cmd : Instance) return String
    is ("");
 
-
 private
 
    type Instance

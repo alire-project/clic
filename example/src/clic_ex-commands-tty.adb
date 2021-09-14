@@ -46,7 +46,8 @@ package body CLIC_Ex.Commands.TTY is
       Put_Line (TTY.Terminal ("CLIC.TTY.Terminal ()"));
 
       Put_Line
-        (TTY.Format (Text  => "CLIC.TTY.Format ("", Fore  => ANSI.Light_Blue, Style => ANSI.Strike)",
+        (TTY.Format (Text  => "CLIC.TTY.Format (""," &
+                       " Fore  => ANSI.Light_Blue, Style => ANSI.Strike)",
                      Fore  => ANSI.Light_Blue,
                      Style => ANSI.Strike));
 

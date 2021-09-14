@@ -1,9 +1,5 @@
 with Ada.Strings.Unbounded;
 
-with GNAT.OS_Lib;
-
-with TOML;
-
 with Simple_Logging;
 
 package body CLIC.Config is
@@ -138,7 +134,7 @@ package body CLIC.Config is
                  Default : Boolean)
                  return Boolean
    is
-     function Get_With_Default_Bool is new Get_With_Default_Gen
+      function Get_With_Default_Bool is new Get_With_Default_Gen
         (Boolean, TOML_Boolean, "Boolean", TOML.As_Boolean, Boolean'Image);
 
    begin
