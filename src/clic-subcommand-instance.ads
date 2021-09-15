@@ -47,8 +47,8 @@ package CLIC.Subcommand.Instance is
    --  Parse the command line and execute a sub-command or display help/usage
    --  depending on command line args.
    --
-   --  If Command_Line is not empty it will used instead of the actual command
-   --  line arguments from Ada.Command_Line.
+   --  If Command_Line is not empty it will be used instead of the actual
+   --  command line arguments from Ada.Command_Line.
 
    procedure Parse_Global_Switches
      (Command_Line : AAA.Strings.Vector := AAA.Strings.Empty_Vector);
@@ -57,8 +57,8 @@ package CLIC.Subcommand.Instance is
    --  running a sub-command or change the behavior of your program based on
    --  these (e.g. verbosity, output color, etc.).
    --
-   --  If Command_Line is not empty it will used instead of the actual command
-   --  line arguments from Ada.Command_Line.
+   --  If Command_Line is not empty it will be used instead of the actual
+   --  command line arguments from Ada.Command_Line.
 
    function What_Command return String;
 
