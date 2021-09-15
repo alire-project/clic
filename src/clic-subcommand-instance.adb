@@ -1,4 +1,5 @@
 with Ada.Command_Line;
+with Ada.Exceptions;
 with GNAT.Command_Line; use GNAT.Command_Line;
 with GNAT.OS_Lib;
 with GNAT.Strings;
@@ -489,7 +490,9 @@ package body CLIC.Subcommand.Instance is
                               Arguments,
                               Stop_At_First_Non_Switch => True);
 
-      Getopt (Global_Config.GNAT_Cfg, Parser => Parser);
+      Getopt (Global_Config.GNAT_Cfg,
+              Parser => Parser,
+              Quiet  =>  True);
 
       --  Make a vector of arguments starting from the first non switch
       loop
@@ -508,10 +511,14 @@ package body CLIC.Subcommand.Instance is
       --  Global_Arguments.
 
    exception
-      when Exit_From_Command_Line | Invalid_Switch | Invalid_Parameter =>
-         Put_Line ("");
-         Put_Line ("Use """ & Main_Command_Name &
-                     " help <command>"" for specific command help");
+      --  Getopt should never raise Exit_From_Command_Line because we filtered
+      --  the -h/--help switches from the command line.
+
+      when E : Invalid_Switch | Invalid_Parameter =>
+         Put_Error (Ada.Exceptions.Exception_Message (E) &
+                      " (global).");
+         Put_Error ("try """ & Main_Command_Name &
+                      " --help"" for more information.");
          Error_Exit (1);
    end Parse_Global_Switches;
 
@@ -567,10 +574,7 @@ package body CLIC.Subcommand.Instance is
 
          Command_Config  : Switches_Configuration;
 
-         Sub_Cmd_Line : GNAT.OS_Lib.String_List_Access :=
-           To_Argument_List (Global_Arguments);
-         --  Make a new command line argument list from the remaining arguments
-         --  and switches after global parsing.
+         Sub_Cmd_Line : GNAT.OS_Lib.String_List_Access;
 
          Parser : Opt_Parser;
 
@@ -587,6 +591,10 @@ package body CLIC.Subcommand.Instance is
             Sub_Arguments := Global_Arguments;
          else
 
+            --  Make a new command line argument list from the remaining
+            --  arguments and switches after global parsing.
+            Sub_Cmd_Line := To_Argument_List (Global_Arguments);
+
             --  Initialize a new switch parser that will only see the new
             --  sub-command line (i.e. the remaining args and switches after
             --  global parsing).
@@ -594,7 +602,9 @@ package body CLIC.Subcommand.Instance is
 
             --  Parse sub-command line, invalid switches will raise an
             --  exception
-            Getopt (Command_Config.GNAT_Cfg, Parser => Parser);
+            Getopt (Command_Config.GNAT_Cfg,
+                    Parser => Parser,
+                    Quiet  => True);
 
             --  Make a vector of arguments for the sub-command (every element
             --  that was not a switch in the sub-command line).
@@ -607,10 +617,11 @@ package body CLIC.Subcommand.Instance is
                   Sub_Arguments.Append (Arg);
                end;
             end loop;
-         end if;
 
-         --  We don't need this anymore
-         GNAT.OS_Lib.Free (Sub_Cmd_Line);
+            --  We don't need this anymore
+            GNAT.OS_Lib.Free (Sub_Cmd_Line);
+
+         end if;
 
          pragma Assert (not Sub_Arguments.Is_Empty,
                         "Should have at least the command name");
@@ -621,12 +632,17 @@ package body CLIC.Subcommand.Instance is
       end;
 
    exception
-      when Exit_From_Command_Line | Invalid_Switch | Invalid_Parameter =>
-         --  Getopt has already displayed some help
-         Put_Line ("");
-         Put_Line ("Use """ & Main_Command_Name &
-                     " help <command>"" for specific command help");
+      --  Getopt should never raise Exit_From_Command_Line because we filtered
+      --  the -h/--help switches from the command line.
+
+      when E : Invalid_Switch | Invalid_Parameter =>
+         Put_Error (Ada.Exceptions.Exception_Message (E) &
+                      " (command/topic """ &
+                      What_Command & """).");
+         Put_Error ("try """ & Main_Command_Name &
+                      " help " & What_Command & """ for more information.");
          Error_Exit (1);
+
       when Error_No_Command =>
          Put_Error ("Unrecognized command: " & Global_Arguments.First_Element);
          Put_Line ("");
