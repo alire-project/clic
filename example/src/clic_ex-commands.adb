@@ -2,6 +2,7 @@ with AAA.Strings;
 
 with CLIC.TTY;
 with CLIC.User_Input;
+with CLIC.Config.Load;
 
 with CLIC_Ex.Commands.TTY;
 with CLIC_Ex.Commands.User_Input;
@@ -66,6 +67,11 @@ package body CLIC_Ex.Commands is
          CLIC.TTY.Enable_Color (Force => False);
          --  This may still not enable color if TTY is detected to be incapable
       end if;
+
+      CLIC.Config.Load.From_TOML (Config_DB, "global", "global_config.toml");
+      CLIC.Config.Load.From_TOML (Config_DB, "local", "local_config.toml");
+
+      Sub_Cmd.Load_Aliases (Config_DB);
 
       Sub_Cmd.Execute;
    end Execute;

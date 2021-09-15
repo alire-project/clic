@@ -24,9 +24,6 @@ package body CLIC_Ex.Commands.Config is
         (if Cmd.Global then "global_config.toml" else "local_config.toml");
 
    begin
-      CLIC.Config.Load.From_TOML (Cmd.Config, "global", "global_config.toml");
-      CLIC.Config.Load.From_TOML (Cmd.Config, "local", "local_config.toml");
-
       --  Check no multi-action
       Enabled := Enabled + (if Cmd.List then 1 else 0);
       Enabled := Enabled + (if Cmd.Get then 1 else 0);
@@ -48,11 +45,6 @@ package body CLIC_Ex.Commands.Config is
          Trace.Error ("--show-origin only valid with --list");
                GNAT.OS_Lib.OS_Exit (1);
       end if;
-
-      --  if Cmd.Builtins_Doc then
-      --     Alire.Config.Edit.Print_Builtins_Doc;
-      --     return;
-      --  end if;
 
       if Cmd.List then
          case Args.Count is

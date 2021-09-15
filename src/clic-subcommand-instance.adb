@@ -11,6 +11,8 @@ with Ada.Strings.Unbounded.Hash;
 with AAA.Table_IO;
 with AAA.Text_IO;
 
+with CLIC.Config.Info;
+
 package body CLIC.Subcommand.Instance is
 
    package Command_Maps is new Ada.Containers.Hashed_Maps
@@ -74,6 +76,8 @@ package body CLIC.Subcommand.Instance is
    procedure Put_Line_For_Access (Str : String);
    function To_Argument_List (V : AAA.Strings.Vector)
                               return GNAT.OS_Lib.Argument_List_Access;
+   function To_Vector (List : GNAT.OS_Lib.Argument_List_Access)
+                       return AAA.Strings.Vector;
    procedure Process_Aliases
      with Pre => not Global_Arguments.Is_Empty;
 
@@ -101,6 +105,27 @@ package body CLIC.Subcommand.Instance is
       end loop;
       return List;
    end To_Argument_List;
+
+   ---------------
+   -- To_Vector --
+   ---------------
+
+   function To_Vector (List : GNAT.OS_Lib.Argument_List_Access)
+                       return AAA.Strings.Vector
+   is
+      use GNAT.OS_Lib;
+
+      Result : AAA.Strings.Vector;
+   begin
+      if List /= null then
+         for Elt of List.all loop
+            if Elt /= null then
+               Result.Append (Elt.all);
+            end if;
+         end loop;
+      end if;
+      return Result;
+   end To_Vector;
 
    --------------
    -- Register --
@@ -168,6 +193,33 @@ package body CLIC.Subcommand.Instance is
    begin
       Registered_Aliases.Include (Name, Replacement);
    end Set_Alias;
+
+   ------------------
+   -- Load_Aliases --
+   ------------------
+
+   procedure Load_Aliases (Conf     : CLIC.Config.Instance;
+                           Root_Key : String := "alias")
+   is
+      Keys : constant AAA.Strings.Vector :=
+        CLIC.Config.Info.List_Keys (Conf, "^" & Root_Key & "\.[^.]+$");
+   begin
+      for Key of Keys loop
+         declare
+            Alias : constant String := AAA.Strings.Tail (Key, '.');
+
+            Value : constant String := Conf.Get (Key, Default => "");
+
+            List  : GNAT.OS_Lib.String_List_Access
+              := GNAT.OS_Lib.Argument_String_To_List (Value);
+         begin
+            if Value /= "" then
+               Set_Alias (Alias, To_Vector (List));
+            end if;
+            GNAT.OS_Lib.Free (List);
+         end;
+      end loop;
+   end Load_Aliases;
 
    ------------------
    -- What_Command --
