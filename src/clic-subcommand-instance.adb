@@ -443,8 +443,6 @@ package body CLIC.Subcommand.Instance is
       ----------------------
 
       function Filter_Arguments return GNAT.OS_Lib.Argument_List_Access is
-         use Ada.Command_Line;
-
          Arguments : AAA.Strings.Vector;
 
          Cmd_Line : constant AAA.Strings.Vector :=
