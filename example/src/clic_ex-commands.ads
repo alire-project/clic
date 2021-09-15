@@ -3,12 +3,15 @@ private with Ada.Text_IO;
 private with GNAT.OS_Lib;
 private with CLIC.Subcommand.Instance;
 private with CLIC.TTY;
+private with CLIC.Config;
 
 package CLIC_Ex.Commands is
 
    procedure Execute;
 
 private
+
+   Config_DB : CLIC.Config.Instance;
 
    procedure Set_Global_Switches
      (Config : in out CLIC.Subcommand.Switches_Configuration);

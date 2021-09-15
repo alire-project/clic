@@ -1,5 +1,7 @@
 --  Instantiate this package to create a sub-command parser/executor
 
+with CLIC.Config;
+
 generic
 
    Main_Command_Name : String; --  Name of the main command or program
@@ -41,6 +43,23 @@ package CLIC.Subcommand.Instance is
    --  Define Alias such that "<Main_Command_Name> <Alias> <Extra_Args>" will
    --  be replaced by "<Main_Command_Name> <Replacement> <Extra_Args>".
    --  If Alias is already set, it will be silently replaced.
+
+   procedure Load_Aliases (Conf     : CLIC.Config.Instance;
+                           Root_Key : String := "alias");
+   --  Load aliases from the given configuration.
+   --
+   --  All the config keys in the format "<Root_Key>.<sub-key>" are
+   --  processed. If the value of a key is a (not null) String, <sub-key>
+   --  is registered as an alias for the value (parsed into a list with
+   --  GNAT.OS_Lib.Argument_String_To_List).
+   --
+   --  For instance when Root_Key := "alias" (default):
+   --  alias.test1 = "cmd arg1 arg2" # Valid: test1 -> ["cmd", "arg1", "arg2"]
+   --  alias.test2 = "cmd"           # Valid: test2 -> ["cmd"]
+   --  alias.test3 = ""              # Ignored
+   --  alias.test4.test = "cmd arg1" # Ignored
+   --  alias.test5 = 20              # Ignored
+   --  alias.test6 = ["cmd", "arg1"] # Ignored
 
    procedure Execute
      (Command_Line : AAA.Strings.Vector := AAA.Strings.Empty_Vector);
