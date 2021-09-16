@@ -1,6 +1,6 @@
 name = "clic"
 description = "Command Line Interface Components"
-version = "0.1.0"
+version = "0.1.1"
 
 authors = ["Alejandro R. Mosteo", "Fabien Chouteau"]
 maintainers = ["alejandro@mosteo.com", "Fabien Chouteau <fabien.chouteau@gmail.com>"]
