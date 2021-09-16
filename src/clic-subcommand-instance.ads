@@ -66,6 +66,10 @@ package CLIC.Subcommand.Instance is
 
    procedure Display_Help (Keyword : String);
 
+   procedure Print_Man_Page (Short_Description : String;
+                             Long_Description  : AAA.Strings.Vector);
+   --  Print a man page for the command in troff format
+
    Error_No_Command : exception;
    Command_Already_Defined : exception;
 

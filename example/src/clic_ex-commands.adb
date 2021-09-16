@@ -20,6 +20,8 @@ package body CLIC_Ex.Commands is
    No_TTY : aliased Boolean := False;
    --  Used to disable control characters in output
 
+   Print_Man : aliased Boolean := False;
+
    -------------------------
    -- Set_Global_Switches --
    -------------------------
@@ -48,6 +50,11 @@ package body CLIC_Ex.Commands is
                      No_TTY'Access,
                      Long_Switch => "--no-tty",
                      Help        => "Disables control characters in output");
+
+      Define_Switch (Config,
+                     Print_Man'Access,
+                     Long_Switch => "--man",
+                     Help        => "Display man page source for the tool");
    end Set_Global_Switches;
 
    -------------
@@ -67,17 +74,25 @@ package body CLIC_Ex.Commands is
          --  This may still not enable color if TTY is detected to be incapable
       end if;
 
-      Sub_Cmd.Execute;
+      if Print_Man then
+         Sub_Cmd.Print_Man_Page ("short tool description",
+                                 AAA.Strings.Empty_Vector
+                                 .Append ("Line 1 of long description.")
+                                 .New_Line
+                                 .Append ("Line 2 of long description."));
+      else
+         Sub_Cmd.Execute;
+      end if;
    end Execute;
 
 begin
 
    Sub_Cmd.Register (new Sub_Cmd.Builtin_Help);
    Sub_Cmd.Register (new CLIC_Ex.Commands.Config.Instance);
-   Sub_Cmd.Register (new CLIC_Ex.Commands.TTY.Instance);
-   Sub_Cmd.Register (new CLIC_Ex.Commands.User_Input.Instance);
-   Sub_Cmd.Register (new CLIC_Ex.Commands.Switches_And_Args.Instance);
-   Sub_Cmd.Register (new CLIC_Ex.Commands.Subsub.Instance);
+   Sub_Cmd.Register ("Group1", new CLIC_Ex.Commands.TTY.Instance);
+   Sub_Cmd.Register ("Group1", new CLIC_Ex.Commands.User_Input.Instance);
+   Sub_Cmd.Register ("Group2", new CLIC_Ex.Commands.Switches_And_Args.Instance);
+   Sub_Cmd.Register ("Group2", new CLIC_Ex.Commands.Subsub.Instance);
    Sub_Cmd.Register (new CLIC_Ex.Commands.Topics.Example.Instance);
 
    Sub_Cmd.Set_Alias ("blink", AAA.Strings.Empty_Vector

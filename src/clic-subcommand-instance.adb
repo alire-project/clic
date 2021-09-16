@@ -823,6 +823,14 @@ package body CLIC.Subcommand.Instance is
       end if;
    end Display_Help;
 
+   --------------------
+   -- Print_Man_Page --
+   --------------------
+
+   procedure Print_Man_Page (Short_Description : String;
+                             Long_Description  : AAA.Strings.Vector)
+   is separate;
+
    -------------
    -- Execute --
    -------------

@@ -22,7 +22,12 @@ package CLIC_Ex.Commands.Switches_And_Args is
 
    overriding
    function Long_Description (Cmd : Instance) return AAA.Strings.Vector
-   is (AAA.Strings.Empty_Vector);
+   is (AAA.Strings.Empty_Vector
+       .Append ("Long description Line1")
+       .Append ("Long description Line2")
+       .Append ("Long description Line3")
+       .New_Line
+       .Append ("Long description Line2"));
 
    overriding
    procedure Setup_Switches
