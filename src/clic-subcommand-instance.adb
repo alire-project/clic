@@ -282,6 +282,7 @@ package body CLIC.Subcommand.Instance is
          return;
       end if;
 
+      Put_Line ("");
       Put_Line (TTY_Chapter ("COMMANDS"));
 
       for Name of Not_In_A_Group loop
@@ -326,6 +327,7 @@ package body CLIC.Subcommand.Instance is
          return;
       end if;
 
+      Put_Line ("");
       Put_Line (TTY_Chapter ("TOPICS"));
 
       for Elt in Registered_Topics.Iterate loop
