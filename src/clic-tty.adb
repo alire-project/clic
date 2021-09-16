@@ -33,7 +33,7 @@ package body CLIC.TTY is
    function Check_TTY return Boolean is
       use Interfaces.C_Streams;
    begin
-      return isatty (fileno (stdin)) /= 0;
+      return isatty (fileno (stdout)) /= 0;
    end Check_TTY;
 
    ------------
