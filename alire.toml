@@ -1,11 +1,11 @@
 name = "clic"
 description = "Command Line Interface Components"
-version = "0.1.0"
+version = "0.2.0"
 
 authors = ["Alejandro R. Mosteo", "Fabien Chouteau"]
 maintainers = ["alejandro@mosteo.com", "Fabien Chouteau <fabien.chouteau@gmail.com>"]
 maintainers-logins = ["mosteo", "Fabien-Chouteau"]
-licenses = "MIT"
+licenses = "MIT AND GPL-3.0-or-later WITH GCC-exception-3.1"
 tags = ["cli", "command-line", "user-input", "tty"]
 website = "https://github.com/alire-project/clic"
 long-description = """
