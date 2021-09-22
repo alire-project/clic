@@ -15,7 +15,7 @@ package body CLIC.Subcommand is
       Argument    : String := "ARG")
    is
    begin
-      GNAT.Command_Line.Define_Switch (Config.GNAT_Cfg,
+      CLIC.Command_Line.Define_Switch (Config.GNAT_Cfg,
                                        Switch      => Switch,
                                        Long_Switch => Long_Switch,
                                        Help        => Help,
@@ -38,7 +38,7 @@ package body CLIC.Subcommand is
       Value       : Boolean := True)
    is
    begin
-      GNAT.Command_Line.Define_Switch (Config.GNAT_Cfg,
+      CLIC.Command_Line.Define_Switch (Config.GNAT_Cfg,
                                        Output      => Output,
                                        Switch      => Switch,
                                        Long_Switch => Long_Switch,
@@ -64,7 +64,7 @@ package body CLIC.Subcommand is
       Argument    : String := "ARG")
    is
    begin
-      GNAT.Command_Line.Define_Switch (Config.GNAT_Cfg,
+      CLIC.Command_Line.Define_Switch (Config.GNAT_Cfg,
                                        Switch      => Switch,
                                        Output      => Output,
                                        Long_Switch => Long_Switch,
@@ -90,7 +90,7 @@ package body CLIC.Subcommand is
       Argument    : String := "ARG")
    is
    begin
-      GNAT.Command_Line.Define_Switch (Config.GNAT_Cfg,
+      CLIC.Command_Line.Define_Switch (Config.GNAT_Cfg,
                                        Output      => Output,
                                        Switch      => Switch,
                                        Long_Switch => Long_Switch,
@@ -106,7 +106,7 @@ package body CLIC.Subcommand is
 
    procedure Define_Switch
      (Config      : in out Switches_Configuration;
-      Callback    : not null GNAT.Command_Line.Value_Callback;
+      Callback    : not null CLIC.Command_Line.Value_Callback;
       Switch      : String := "";
       Long_Switch : String := "";
       Help        : String := "";
@@ -114,7 +114,7 @@ package body CLIC.Subcommand is
       Argument    : String := "ARG")
    is
    begin
-      GNAT.Command_Line.Define_Switch (Config.GNAT_Cfg,
+      CLIC.Command_Line.Define_Switch (Config.GNAT_Cfg,
                                        Callback    => Callback,
                                        Switch      => Switch,
                                        Long_Switch => Long_Switch,
@@ -144,7 +144,7 @@ package body CLIC.Subcommand is
 
    procedure Clear (This : in out Switches_Configuration) is
    begin
-      GNAT.Command_Line.Free (This.GNAT_Cfg);
+      CLIC.Command_Line.Free (This.GNAT_Cfg);
       This.Info.Clear;
    end Clear;
 
