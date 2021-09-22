@@ -1,6 +1,6 @@
 with AAA.Strings;
 with GNAT.Strings;
-with GNAT.Command_Line;
+with CLIC.Command_Line;
 
 private with Ada.Strings.Unbounded;
 private with Ada.Containers.Vectors;
@@ -55,7 +55,7 @@ package CLIC.Subcommand is
 
    procedure Define_Switch
      (Config      : in out Switches_Configuration;
-      Callback    : not null GNAT.Command_Line.Value_Callback;
+      Callback    : not null CLIC.Command_Line.Value_Callback;
       Switch      : String := "";
       Long_Switch : String := "";
       Help        : String := "";
@@ -169,7 +169,7 @@ private
                   Switch, Long_Switch, Help, Argument : String);
 
    type Switches_Configuration is limited record
-      GNAT_Cfg : GNAT.Command_Line.Command_Line_Configuration;
+      GNAT_Cfg : CLIC.Command_Line.Command_Line_Configuration;
       --  Still use GNAT.Command_Line to do the actual parsing
 
       Info     : Switch_Info_Vectors.Vector;

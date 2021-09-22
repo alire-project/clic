@@ -1,6 +1,5 @@
 with Ada.Command_Line;
 with Ada.Exceptions;
-with GNAT.Command_Line; use GNAT.Command_Line;
 with GNAT.OS_Lib;
 with GNAT.Strings;
 
@@ -12,6 +11,7 @@ with AAA.Table_IO;
 with AAA.Text_IO;
 
 with CLIC.Config.Info;
+with CLIC.Command_Line; use CLIC.Command_Line;
 
 package body CLIC.Subcommand.Instance is
 
@@ -552,7 +552,7 @@ package body CLIC.Subcommand.Instance is
       loop
          declare
             Arg : constant String :=
-              GNAT.Command_Line.Get_Argument (Parser => Parser);
+              CLIC.Command_Line.Get_Argument (Parser => Parser);
          begin
             exit when Arg = "";
             Global_Arguments.Append (Arg);
@@ -665,7 +665,7 @@ package body CLIC.Subcommand.Instance is
             loop
                declare
                   Arg : constant String :=
-                    GNAT.Command_Line.Get_Argument (Parser => Parser);
+                    CLIC.Command_Line.Get_Argument (Parser => Parser);
                begin
                   exit when Arg = "";
                   Sub_Arguments.Append (Arg);
