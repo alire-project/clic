@@ -14,8 +14,9 @@ package CLIC_Ex.Commands.Config is
    is ("config");
 
    overriding
-   function Switches_As_Args (This : Instance) return Boolean
-   is (False);
+   function Switch_Parsing (This : Instance)
+                            return CLIC.Subcommand.Switch_Parsing_Kind
+   is (CLIC.Subcommand.Parse_All);
 
    overriding
    procedure Execute (Cmd  : in out Instance;

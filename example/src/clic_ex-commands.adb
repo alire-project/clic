@@ -7,6 +7,7 @@ with CLIC.Config.Load;
 with CLIC_Ex.Commands.TTY;
 with CLIC_Ex.Commands.User_Input;
 with CLIC_Ex.Commands.Switches_And_Args;
+with CLIC_Ex.Commands.Double_Dash;
 with CLIC_Ex.Commands.Topics.Example;
 with CLIC_Ex.Commands.Config;
 with CLIC_Ex.Commands.Subsub;
@@ -83,6 +84,7 @@ begin
    Sub_Cmd.Register (new CLIC_Ex.Commands.TTY.Instance);
    Sub_Cmd.Register (new CLIC_Ex.Commands.User_Input.Instance);
    Sub_Cmd.Register (new CLIC_Ex.Commands.Switches_And_Args.Instance);
+   Sub_Cmd.Register (new CLIC_Ex.Commands.Double_Dash.Instance);
    Sub_Cmd.Register (new CLIC_Ex.Commands.Subsub.Instance);
    Sub_Cmd.Register (new CLIC_Ex.Commands.Topics.Example.Instance);
 

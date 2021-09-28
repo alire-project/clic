@@ -13,8 +13,9 @@ package CLIC_Ex.Commands.Subsub is
    is ("subsub");
 
    overriding
-   function Switches_As_Args (This : Instance) return Boolean
-   is (True);
+   function Switch_Parsing (This : Instance)
+                            return CLIC.Subcommand.Switch_Parsing_Kind
+   is (CLIC.Subcommand.Parse_All);
 
    overriding
    procedure Execute (Cmd  : in out Instance;

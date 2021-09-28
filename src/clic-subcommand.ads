@@ -82,7 +82,22 @@ package CLIC.Subcommand is
    --  This name is used to identify the sub-command in usage and command line.
    --  E.g. "my_app <name>" will exectute the <name> command.
 
-   function Switches_As_Args (Cmd : Command) return Boolean
+   type Switch_Parsing_Kind is
+     (Parse_All,
+      --  All the sub-command arguments are parsed for switches
+
+      Before_Double_Dash,
+      --  Only the arguments before a potential "--" are parsed for switches.
+      --  The remaining switches and arguments are passed to the Args parameter
+      --  of the Execute primitive.
+
+      All_As_Args
+      --  Sub-command arguments parsing is disabled, both the sub-command
+      --  switches and arguments passed to the Args parameter of the Execute
+      --  primitive.
+     );
+
+   function Switch_Parsing (Cmd : Command) return Switch_Parsing_Kind
    is abstract;
    --  Return True to skip sub-command switches parsing and get both the
    --  sub-command switches and arguments passed to the Args parameter of

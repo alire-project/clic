@@ -2,7 +2,7 @@ with AAA.Strings;
 
 with CLIC.Subcommand;
 
-package CLIC_Ex.Commands.TTY is
+package CLIC_Ex.Commands.Double_Dash is
 
    type Instance
    is new CLIC.Subcommand.Command
@@ -10,12 +10,12 @@ package CLIC_Ex.Commands.TTY is
 
    overriding
    function Name (Cmd : Instance) return CLIC.Subcommand.Identifier
-   is ("tty");
+   is ("double_dash");
 
    overriding
    function Switch_Parsing (This : Instance)
                             return CLIC.Subcommand.Switch_Parsing_Kind
-   is (CLIC.Subcommand.Parse_All);
+   is (CLIC.Subcommand.Before_Double_Dash);
 
    overriding
    procedure Execute (Cmd  : in out Instance;
@@ -23,13 +23,7 @@ package CLIC_Ex.Commands.TTY is
 
    overriding
    function Long_Description (Cmd : Instance) return AAA.Strings.Vector
-   is (AAA.Strings.Empty_Vector
-       .Append ("Long description of the TTY command.")
-       .Append ("Multiple lines:")
-       .Append (" - 1")
-       .Append (" - 2")
-       .Append (" - 3")
-      );
+   is (AAA.Strings.Empty_Vector);
 
    overriding
    procedure Setup_Switches
@@ -38,18 +32,16 @@ package CLIC_Ex.Commands.TTY is
 
    overriding
    function Short_Description (Cmd : Instance) return String
-   is ("Show tty colors");
+   is ("Switch parsing before -- (double dash)");
 
    overriding
    function Usage_Custom_Parameters (Cmd : Instance) return String
-   is ("");
+   is ("[--upper] [--] [args]");
 
 private
 
    type Instance
    is new CLIC.Subcommand.Command
-   with record
-      Blink : aliased Boolean;
-   end record;
+   with null record;
 
-end CLIC_Ex.Commands.TTY;
+end CLIC_Ex.Commands.Double_Dash;

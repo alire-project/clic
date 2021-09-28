@@ -101,8 +101,8 @@ private
    is ("help");
 
    overriding
-   function Switches_As_Args (This : Builtin_Help) return Boolean
-   is (False);
+   function Switch_Parsing (This : Builtin_Help) return Switch_Parsing_Kind
+   is (Parse_All);
 
    overriding
    procedure Execute (This : in out Builtin_Help;
