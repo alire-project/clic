@@ -196,7 +196,7 @@ package body CLIC.User_Input is
                Simple_Logging.Info
                  ("Using default choice in non-interactive mode: "
                   & Choices.First_Element);
-               Simple_Logging.Warning (TTY.Is_TTY'Image);
+               Simple_Logging.Warning (TTY.Is_TTY'Img);
                return Choices.First_Index;
             end if;
 
