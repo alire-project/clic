@@ -81,6 +81,41 @@ package body CLIC.Subcommand.Instance is
    procedure Process_Aliases
      with Pre => not Global_Arguments.Is_Empty;
 
+   procedure Split_At_Double_Dash (Args          :     AAA.Strings.Vector;
+                                   Before, After : out AAA.Strings.Vector)
+     with Post => (if not Args.Contains ("--") then Before."=" (Args))
+                  and then
+                   not Before.Contains ("--");
+   --  Split a vector of command line arguments, everything before a potential
+   --  first "--" (double dash) is added to the Before output, the arguments
+   --  after the "--" are added to the After output. The first "--" is not
+   --  added to either the Before or After output.
+   --
+   --  When there is no "--" argument, Before is equal to Args.
+
+
+   --------------------------
+   -- Split_At_Double_Dash --
+   --------------------------
+
+   procedure Split_At_Double_Dash (Args          :     AAA.Strings.Vector;
+                                   Before, After : out AAA.Strings.Vector)
+   is
+      Before_Double_Dash : Boolean := True;
+   begin
+      for Elt of Args loop
+         if Before_Double_Dash then
+            if Elt = "--" then
+               Before_Double_Dash := False;
+            else
+               Before.Append (Elt);
+            end if;
+         else
+            After.Append (Elt);
+         end if;
+      end loop;
+   end Split_At_Double_Dash;
+
    -------------------------
    -- Put_Line_For_Access --
    -------------------------
@@ -632,22 +667,37 @@ package body CLIC.Subcommand.Instance is
 
          Parser : Opt_Parser;
 
-         Sub_Arguments : AAA.Strings.Vector;
+         To_Parse, Sub_Arguments : AAA.Strings.Vector;
       begin
 
          --  Add command specific switches to the config. We don't need the
          --  global switches because they have been parsed before.
          Cmd.Setup_Switches (Command_Config);
 
-         if Cmd.Switches_As_Args then
+         case Cmd.Switch_Parsing is
+            when Parse_All =>
+               --  Parse all global arguments
+               To_Parse := Global_Arguments;
+               Sub_Arguments := AAA.Strings.Empty_Vector;
 
-            --  Skip sub-command switch parsing as requested by the command
-            Sub_Arguments := Global_Arguments;
-         else
+            when Before_Double_Dash =>
+               --  Only parse the arguments before a potential "--"
+               Split_At_Double_Dash (Global_Arguments,
+                                     Before => To_Parse,
+                                     After  => Sub_Arguments);
+
+            when All_As_Args =>
+               --  Skip all sub-command switch parsing
+               To_Parse := AAA.Strings.Empty_Vector;
+               Sub_Arguments := Global_Arguments;
+
+         end case;
+
+         if not To_Parse.Is_Empty then
 
             --  Make a new command line argument list from the remaining
             --  arguments and switches after global parsing.
-            Sub_Cmd_Line := To_Argument_List (Global_Arguments);
+            Sub_Cmd_Line := To_Argument_List (To_Parse);
 
             --  Initialize a new switch parser that will only see the new
             --  sub-command line (i.e. the remaining args and switches after
@@ -662,15 +712,21 @@ package body CLIC.Subcommand.Instance is
 
             --  Make a vector of arguments for the sub-command (every element
             --  that was not a switch in the sub-command line).
-            loop
-               declare
-                  Arg : constant String :=
-                    CLIC.Command_Line.Get_Argument (Parser => Parser);
-               begin
-                  exit when Arg = "";
-                  Sub_Arguments.Append (Arg);
-               end;
-            end loop;
+            declare
+               Args_After_Parsing : AAA.Strings.Vector;
+            begin
+               loop
+                  declare
+                     Arg : constant String :=
+                       CLIC.Command_Line.Get_Argument (Parser => Parser);
+                  begin
+                     exit when Arg = "";
+                     Args_After_Parsing.Append (Arg);
+                  end;
+               end loop;
+
+               Sub_Arguments.Prepend (Args_After_Parsing);
+            end;
 
             --  We don't need this anymore
             GNAT.OS_Lib.Free (Sub_Cmd_Line);
