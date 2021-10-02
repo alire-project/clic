@@ -1,6 +1,6 @@
 name = "clic"
 description = "Command Line Interface Components"
-version = "0.2.0"
+version = "0.2.1-dev"
 
 authors = ["Alejandro R. Mosteo", "Fabien Chouteau"]
 maintainers = ["alejandro@mosteo.com", "Fabien Chouteau <fabien.chouteau@gmail.com>"]
@@ -13,6 +13,7 @@ Command Line Interface Components:
  - "git like" subcommand handling
  - TTY color and formatting
  - User input queries
+ - User configuration
 """
 
 [configuration]
