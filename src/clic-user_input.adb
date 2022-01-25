@@ -257,11 +257,17 @@ package body CLIC.User_Input is
             when TIO.End_Error =>
                --  This happens on the user hitting Ctrl-D, and no further
                --  input can be obtained as stdin is closed
+               Simple_Logging.Debug ("End_Error caught.");
                raise User_Interrupt;
-            when others =>
+
+            when User_Input_Error =>
                Simple_Logging.Info
                  (TTY.Error ("✗ ") &
                     "Not a valid choice, please use a line index.");
+
+            when E : others =>
+               Simple_Logging.Warning ("Unexpected input, exiting.");
+               raise User_Interrupt;
          end;
       end loop;
    end Query_Multi;
