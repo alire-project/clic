@@ -44,6 +44,12 @@ is
    -- Predefined formats --
    ------------------------
 
+   function Text_With_Fallback (Text : String; Fallback : String)
+                                return String
+     with Post => Text_With_Fallback'Result =
+       (if Color_Enabled and then Is_TTY then Text else Fallback);
+   --  Intended to have a rich text and a safe alternative
+
    function Info (Text : String := "") return String;
    --  Prepends Text with a Emph ("🛈") or "Note: " if no tty color enabled
 
@@ -83,6 +89,12 @@ is
    --  For versions/version sets, bold magenta
 
 private
+
+   function Text_With_Fallback (Text : String; Fallback : String)
+                                return String
+   is (if Color_Enabled and then Is_TTY
+       then Text
+       else Fallback);
 
    function Info (Text : String := "") return String is
      (if Color_Enabled and then Is_TTY
