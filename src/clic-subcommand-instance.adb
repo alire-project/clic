@@ -754,8 +754,8 @@ package body CLIC.Subcommand.Instance is
                       " help " & What_Command & """ for more information.");
          if Is_Global_Switch (Full_Switch (Parser)) then
             Put_Line ("Option '" & Full_Switch (Parser)
-                       & "' is a valid global option, to use as such please "
-                       & "give it before the subcommand.");
+                       & "' is a valid global option, to use it as such please"
+                       & " give it before the subcommand.");
          end if;
          Error_Exit (1);
 
