@@ -37,7 +37,7 @@ package CLIC.Subcommand.Instance is
    --  Register a sub-command in a group
 
    procedure Register (Topic : not null Help_Topic_Access);
-   --  Register an help topic
+   --  Register a help topic
 
    procedure Set_Alias (Alias : Identifier; Replacement : AAA.Strings.Vector);
    --  Define Alias such that "<Main_Command_Name> <Alias> <Extra_Args>" will
@@ -90,6 +90,9 @@ package CLIC.Subcommand.Instance is
 
    type Builtin_Help is new Command with private;
    --  Use Register (new Builtin_Help); to provide a build-in help command
+
+   function Is_Global_Switch (Switch : String) return Boolean;
+   --  Say if the switch has been defined as global
 
 private
 

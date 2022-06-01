@@ -638,6 +638,9 @@ package body CLIC.Subcommand.Instance is
    procedure Execute
      (Command_Line : AAA.Strings.Vector := AAA.Strings.Empty_Vector)
    is
+      Parser : Opt_Parser;
+      --  Subcommand parser, declared here so it is available to the exception
+      --  handler below.
    begin
 
       Parse_Global_Switches (Command_Line);
@@ -664,8 +667,6 @@ package body CLIC.Subcommand.Instance is
          Command_Config  : Switches_Configuration;
 
          Sub_Cmd_Line : GNAT.OS_Lib.String_List_Access;
-
-         Parser : Opt_Parser;
 
          To_Parse, Sub_Arguments : AAA.Strings.Vector;
       begin
@@ -751,6 +752,11 @@ package body CLIC.Subcommand.Instance is
                       What_Command & """).");
          Put_Error ("try """ & Main_Command_Name &
                       " help " & What_Command & """ for more information.");
+         if Is_Global_Switch (Full_Switch (Parser)) then
+            Put_Line ("Option '" & Full_Switch (Parser)
+                       & "' is a valid global option, to use as such please "
+                       & "give it before the subcommand.");
+         end if;
          Error_Exit (1);
 
       when Error_No_Command =>
@@ -998,5 +1004,34 @@ package body CLIC.Subcommand.Instance is
 
       Display_Help (Args (1));
    end Execute;
+
+   ----------------------
+   -- Is_Global_Switch --
+   ----------------------
+
+   function Is_Global_Switch (Switch : String) return Boolean is
+      Parser : Opt_Parser;
+      Command_Line : GNAT.OS_Lib.Argument_List_Access :=
+                       GNAT.OS_Lib.Argument_String_To_List (Switch);
+      Result : Boolean := False;
+   begin
+      Initialize_Option_Scan
+        (Parser,
+         Command_Line => Command_Line,
+         Stop_At_First_Non_Switch => True);
+
+      begin
+         Getopt (Config => Global_Config.GNAT_Cfg,
+                 Parser => Parser,
+                 Quiet  => True);
+         Result := True;
+      exception
+         when Invalid_Switch =>
+            Result := False;
+      end;
+
+      GNAT.OS_Lib.Free (Command_Line);
+      return Result;
+   end Is_Global_Switch;
 
 end CLIC.Subcommand.Instance;
