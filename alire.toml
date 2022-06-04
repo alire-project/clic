@@ -1,6 +1,6 @@
 name = "clic"
 description = "Command Line Interface Components"
-version = "0.2.1-dev"
+version = "0.2.1"
 
 authors = ["Alejandro R. Mosteo", "Fabien Chouteau"]
 maintainers = ["alejandro@mosteo.com", "Fabien Chouteau <fabien.chouteau@gmail.com>"]
@@ -24,4 +24,4 @@ disabled = true # CLIC is an Alire dependency using git submodule, so we can't
 aaa = "~0.2.4"
 simple_logging = "^1.2.0"
 ansiada = "~0.1.0"
-ada_toml = "~0.2.0"
+ada_toml = "~0.2|~0.3"
