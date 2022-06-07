@@ -16,10 +16,6 @@ Command Line Interface Components:
  - User configuration
 """
 
-[configuration]
-disabled = true # CLIC is an Alire dependency using git submodule, so we can't
-                # use the crate configuration here.
-
 [[depends-on]]
 aaa = "~0.2.4"
 simple_logging = "^1.2.0"
