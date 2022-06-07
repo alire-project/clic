@@ -1,4 +1,4 @@
-with ANSI;
+with AnsiAda;
 
 package CLIC.TTY
 with Preelaborate
@@ -9,7 +9,7 @@ is
    --  flag Simple_Logging.Is_TTY is false.
 
    --  Re-expose for clients
-   package ANSI renames Standard.ANSI;
+   package ANSI renames AnsiAda;
 
    function Is_TTY return Boolean;
 
