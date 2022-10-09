@@ -1,8 +1,12 @@
+with Ada.Strings.UTF_Encoding.Wide_Wide_Strings;
+
 with AnsiAda;
 
 package CLIC.TTY
 with Preelaborate
 is
+
+   subtype UTF_8_String is Ada.Strings.UTF_Encoding.UTF_8_String;
 
    --  Color/Formatting related subprograms. These won't have any
    --  effect if a redirection of output is detected, or if global
@@ -50,10 +54,10 @@ is
        (if Color_Enabled and then Is_TTY then Text else Fallback);
    --  Intended to have a rich text and a safe alternative
 
-   function Info (Text : String := "") return String;
+   function Info (Text : String := "") return UTF_8_String;
    --  Prepends Text with a Emph ("🛈") or "Note: " if no tty color enabled
 
-   function Success (Text : String := "") return String;
+   function Success (Text : String := "") return UTF_8_String;
    --  Prepends Text (in normal formatting) with a green check mark, or a
    --  simple Success: text if no tty or color enabled.
 
@@ -90,6 +94,11 @@ is
 
 private
 
+   function U (S          : Wide_Wide_String;
+               Output_BOM : Boolean := False)
+               return Ada.Strings.UTF_Encoding.UTF_8_String
+               renames Ada.Strings.UTF_Encoding.Wide_Wide_Strings.Encode;
+
    function Text_With_Fallback (Text : String; Fallback : String)
                                 return String
    is (if Color_Enabled and then Is_TTY
@@ -98,12 +107,12 @@ private
 
    function Info (Text : String := "") return String is
      (if Color_Enabled and then Is_TTY
-      then Emph ("ⓘ") & " " & Text
+      then Emph (U ("ⓘ")) & " " & Text
       else "Note: " & Text);
 
-   function Success (Text : String := "") return String is
+   function Success (Text : String := "") return UTF_8_String is
      (if Color_Enabled and then Is_TTY
-      then OK ("✓") & " " & Text
+      then OK (U ("✓")) & " " & Text
       else "Success: " & Text);
 
    function OK (Text : String) return String is
