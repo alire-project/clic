@@ -16,7 +16,8 @@ project Clic is
    for Library_Kind use Library_Type;
 
    package Compiler is
-      for Default_Switches ("Ada") use Clic_Config.Ada_Compiler_Switches;
+      for Default_Switches ("Ada") use Clic_Config.Ada_Compiler_Switches
+        & ("-gnatW8"); -- Interpret non-ascii Literals As UTF8
    end Compiler;
 
    package Binder is

@@ -94,11 +94,6 @@ is
 
 private
 
-   function U (S          : Wide_Wide_String;
-               Output_BOM : Boolean := False)
-               return Ada.Strings.UTF_Encoding.UTF_8_String
-               renames Ada.Strings.UTF_Encoding.Wide_Wide_Strings.Encode;
-
    function Text_With_Fallback (Text : String; Fallback : String)
                                 return String
    is (if Color_Enabled and then Is_TTY
