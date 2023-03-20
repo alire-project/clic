@@ -19,4 +19,15 @@ package CLIC.Config.Edit is
    --  configuration file is not modified. In addition the Check function
    --  can print an error message explaining why the key/value is invalid.
 
+   generic
+      type Value_Type is private;       -- The Ada type to store
+      TOML_Type : TOML.Atom_Value_Kind; -- The TOML type it must match
+      with function Image (Value : Value_Type) return String;
+      --  This should be Value_Type'Image
+   function Set_Typed (Path  : String;
+                       Key   : Config_Key;
+                       Value : Value_Type;
+                       Check : Check_Import := null)
+                       return Boolean;
+
 end CLIC.Config.Edit;

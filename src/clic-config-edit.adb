@@ -197,4 +197,47 @@ package body CLIC.Config.Edit is
       return True;
    end Set;
 
+   ---------------
+   -- Set_Typed --
+   ---------------
+
+   function Set_Typed (Path  : String;
+                       Key   : Config_Key;
+                       Value : Value_Type;
+                       Check : Check_Import := null)
+                       return Boolean
+   is
+
+      ------------------
+      -- Check_Proper --
+      ------------------
+      --  Check that the type to be stored is actually the one intended, in
+      --  addition to the user check
+      function Check_Proper (Key : Config_Key; Value : TOML.TOML_Value)
+                             return Boolean
+      is (Check (Key, Value) and then Value.Kind = TOML_Type);
+
+      -----------------
+      -- Set_Boolean --
+      -----------------
+
+      function Set_Boolean return Boolean is
+      begin
+         return Set (Path, Key,
+                     (case Boolean'Value (Image (Value)) is
+                         when True  => "true",
+                         when False => "false"),
+                     Check_Proper'Unrestricted_Access);
+      end Set_Boolean;
+
+   begin
+      if TOML_Type = TOML_Boolean then
+         --  Boolean is special because we need to pass exactly "true/false"
+         return Set_Boolean;
+      else
+         return Set (Path, Key, Image (Value),
+                     Check_Proper'Unrestricted_Access);
+      end if;
+   end Set_Typed;
+
 end CLIC.Config.Edit;
