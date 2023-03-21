@@ -13,6 +13,6 @@ private
 
    function WW (S          : Ada.Strings.UTF_Encoding.UTF_8_String)
                 return Wide_Wide_String
-                renames Ada.Strings.UTF_Encoding.Wide_Wide_Strings.decode;
+                renames Ada.Strings.UTF_Encoding.Wide_Wide_Strings.Decode;
 
 end CLIC;

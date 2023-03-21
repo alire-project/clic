@@ -93,7 +93,6 @@ package body CLIC.Subcommand.Instance is
    --
    --  When there is no "--" argument, Before is equal to Args.
 
-
    --------------------------
    -- Split_At_Double_Dash --
    --------------------------

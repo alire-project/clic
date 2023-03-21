@@ -1,4 +1,4 @@
-with Ada.Strings.UTF_Encoding.Wide_Wide_Strings;
+with Ada.Strings.UTF_Encoding;
 
 with AnsiAda;
 
