@@ -10,12 +10,12 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
-        gnat_version: [^10, ^11]
-        gprbuild_version: [^21]
+        gnat_version: [^10, ^11, ^12]
+        gprbuild_version: [^21, ^22]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - uses: alire-project/setup-alire@v1
+      - uses: alire-project/setup-alire@v2
         with:
           toolchain: gprbuild${{ matrix.gprbuild_version }} gnat_native${{ matrix.gnat_version }} --disable-assistant
       - run: alr build
