@@ -5,7 +5,7 @@ pragma Style_Checks (Off);
 package Clic_Config is
    pragma Pure;
 
-   Crate_Version : constant String := "0.2.1";
+   Crate_Version : constant String := "0.3.0";
    Crate_Name : constant String := "clic";
 
    Alire_Host_OS : constant String := "linux";
