@@ -215,7 +215,8 @@ package body CLIC.Config.Edit is
       --  addition to the user check
       function Check_Proper (Key : Config_Key; Value : TOML.TOML_Value)
                              return Boolean
-      is (Check (Key, Value) and then Value.Kind = TOML_Type);
+      is ((Check = null or else Check (Key, Value))
+          and then Value.Kind = TOML_Type);
 
       -----------------
       -- Set_Boolean --
