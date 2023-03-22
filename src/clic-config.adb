@@ -112,6 +112,23 @@ package body CLIC.Config is
       end if;
    end Get_As_String;
 
+   -------------------
+   -- Get_As_String --
+   -------------------
+
+   function Get_As_String (This    : Instance;
+                           Key     : Config_Key;
+                           Default : String) return String
+   is
+      Val : constant String := Get_As_String (This, Key);
+   begin
+      if Val = "" then
+         return Default;
+      else
+         return Val;
+      end if;
+   end Get_As_String;
+
    ---------
    -- Get --
    ---------
