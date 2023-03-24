@@ -1,4 +1,4 @@
-with Ada.Text_IO;
+with Ada.Wide_Wide_Text_IO;
 with Ada.Directories;
 
 with AAA.Strings;
@@ -35,7 +35,7 @@ package body CLIC.Config.Edit is
    -----------------------
 
    procedure Write_Config_File (Table : TOML_Value; Path : String) is
-      use Ada.Text_IO;
+      use Ada.Wide_Wide_Text_IO;
       use Ada.Directories;
       File : File_Type;
    begin
@@ -45,7 +45,7 @@ package body CLIC.Config.Edit is
 
       Create (File, Out_File, Path);
       Trace.Debug ("Write config: '" & TOML.Dump_As_String (Table) & "'");
-      Put (File, TOML.Dump_As_String (Table));
+      Put (File, WW (TOML.Dump_As_String (Table)));
       Close (File);
    end Write_Config_File;
 

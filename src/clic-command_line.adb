@@ -2238,10 +2238,10 @@ package body CLIC.Command_Line is
       Add_Before : Boolean   := False)
    is
       Success : Boolean;
-      pragma Unreferenced (Success);
    begin
       Add_Switch (Cmd, Switch, Parameter, Separator,
                   Section, Add_Before, Success);
+      pragma Assert (Success, "Couldn't add switch");
    end Add_Switch;
 
    ----------------
@@ -2456,9 +2456,9 @@ package body CLIC.Command_Line is
       Section       : String := "")
    is
       Success : Boolean;
-      pragma Unreferenced (Success);
    begin
       Remove_Switch (Cmd, Switch, Remove_All, Has_Parameter, Section, Success);
+      pragma Assert (Success, "Couldn't remove switch");
    end Remove_Switch;
 
    -------------------

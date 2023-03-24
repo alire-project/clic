@@ -262,10 +262,10 @@ package body CLIC.User_Input is
 
             when User_Input_Error =>
                Simple_Logging.Info
-                 (TTY.Error ("✗ ") &
+                 (TTY.Error (U ("✗ ")) &
                     "Not a valid choice, please use a line index.");
 
-            when E : others =>
+            when others =>
                Simple_Logging.Warning ("Unexpected input, exiting.");
                raise User_Interrupt;
          end;

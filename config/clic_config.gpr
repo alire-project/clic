@@ -4,7 +4,7 @@ with "ada_toml.gpr";
 with "ansiada.gpr";
 with "simple_logging.gpr";
 abstract project Clic_Config is
-   Crate_Version := "0.2.1";
+   Crate_Version := "0.3.0";
    Crate_Name := "clic";
 
    Alire_Host_OS := "linux";
@@ -12,7 +12,8 @@ abstract project Clic_Config is
    Alire_Host_Arch := "x86_64";
 
    Alire_Host_Distro := "ubuntu";
-   Ada_Compiler_Switches := External_As_List ("ADAFLAGS", " ") &
+   Ada_Compiler_Switches := External_As_List ("ADAFLAGS", " ");
+   Ada_Compiler_Switches := Ada_Compiler_Switches &
           (
             "-O3" -- Optimize for performance
            ,"-gnatn" -- Enable inlining

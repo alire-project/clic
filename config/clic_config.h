@@ -2,7 +2,7 @@
 #ifndef CLIC_CONFIG_H
 #define CLIC_CONFIG_H
 
-#define CRATE_VERSION "0.2.1"
+#define CRATE_VERSION "0.3.0"
 #define CRATE_NAME "clic"
 
 #define ALIRE_HOST_OS "linux"
