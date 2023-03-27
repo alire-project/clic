@@ -100,15 +100,15 @@ package body CLIC.Config is
    -- Get_As_String --
    -------------------
 
-   function Get_As_String (This : Instance;
-                           Key : Config_Key)
-                           return String
+   function Get_As_String (This    : Instance;
+                           Key     : Config_Key;
+                           Default : String) return String
    is
    begin
       if This.Defined (Key) then
          return Image (This.Get (Key).Value);
       else
-         return "";
+         return Default;
       end if;
    end Get_As_String;
 
@@ -116,18 +116,10 @@ package body CLIC.Config is
    -- Get_As_String --
    -------------------
 
-   function Get_As_String (This    : Instance;
-                           Key     : Config_Key;
-                           Default : String) return String
-   is
-      Val : constant String := Get_As_String (This, Key);
-   begin
-      if Val = "" then
-         return Default;
-      else
-         return Val;
-      end if;
-   end Get_As_String;
+    function Get_As_String (This : Instance;
+                            Key : Config_Key)
+                            return String
+   is (Get_As_String (This, Key, Default => ""));
 
    ---------
    -- Get --
