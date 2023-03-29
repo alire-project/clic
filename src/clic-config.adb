@@ -102,7 +102,7 @@ package body CLIC.Config is
 
    function Get_As_String (This    : Instance;
                            Key     : Config_Key;
-                           Default : String) return String
+                           Default : String := "") return String
    is
    begin
       if This.Defined (Key) then
@@ -111,15 +111,6 @@ package body CLIC.Config is
          return Default;
       end if;
    end Get_As_String;
-
-   -------------------
-   -- Get_As_String --
-   -------------------
-
-    function Get_As_String (This : Instance;
-                            Key : Config_Key)
-                            return String
-   is (Get_As_String (This, Key, Default => ""));
 
    ---------
    -- Get --
