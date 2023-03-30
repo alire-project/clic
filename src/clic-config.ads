@@ -50,9 +50,11 @@ package CLIC.Config with Preelaborate is
    function Defined (This : Instance; Key : Config_Key) return Boolean;
    --  Return True if a value is defined for the given key
 
-   function Get_As_String (This : Instance; Key : Config_Key) return String;
+   function Get_As_String (This    : Instance;
+                           Key     : Config_Key;
+                           Default : String := "") return String;
    --  Return a string representation of the value for the given configuration
-   --  Key. If the key is not defined, an empty string is returned.
+   --  Key. If the key is not defined, Default is returned.
 
    function Get (This    : Instance;
                  Key     : Config_Key;
