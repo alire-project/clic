@@ -15,10 +15,11 @@ abstract project Clic_Config is
    Ada_Compiler_Switches := External_As_List ("ADAFLAGS", " ");
    Ada_Compiler_Switches := Ada_Compiler_Switches &
           (
-            "-O3" -- Optimize for performance
-           ,"-gnatn" -- Enable inlining
+            "-O3"                 -- Optimize for performance
+           ,"-gnatn"              -- Enable inlining
            ,"-ffunction-sections" -- Separate ELF section for each function
-           ,"-fdata-sections" -- Separate ELF section for each variable
+           ,"-fdata-sections"     -- Separate ELF section for each variable
+           ,"-gnatW8"             -- use UTF-8 Encoding for Source Files
           );
 
    type Build_Profile_Kind is ("release", "validation", "development");
