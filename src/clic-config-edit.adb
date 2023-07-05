@@ -20,9 +20,11 @@ package body CLIC.Config.Edit is
      with Pre => Table.Kind = TOML_Table;
 
    function Remove_From_Table (Table : TOML_Value;
-                               Key   : Config_Key)
+                               Key   : Config_Key;
+                               Quiet : Boolean := False)
                                return Boolean
      with Pre => Table.Kind = TOML_Table;
+   --  When Quiet, don't print error messages when returning False
 
    function Add_In_Table (Table : TOML_Value;
                           Key   : Config_Key;
@@ -54,7 +56,8 @@ package body CLIC.Config.Edit is
    -----------------------
 
    function Remove_From_Table (Table : TOML_Value;
-                               Key   : Config_Key)
+                               Key   : Config_Key;
+                               Quiet : Boolean := False)
                                return Boolean
    is
       use AAA.Strings;
@@ -64,7 +67,9 @@ package body CLIC.Config.Edit is
    begin
       if not Table.Has (Id) then
          --  The key doesn't exist
-         Trace.Error ("Configuration key not defined");
+         if not Quiet then
+            Trace.Error ("Configuration key not defined");
+         end if;
          return False;
       end if;
 
@@ -78,7 +83,9 @@ package body CLIC.Config.Edit is
             if Sub.Kind = TOML_Table then
                return Remove_From_Table (Sub, Split (Key, '.', Tail));
             else
-               Trace.Error ("Configuration key not defined");
+               if not Quiet then
+                  Trace.Error ("Configuration key not defined");
+               end if;
                return False;
             end if;
          end;
@@ -124,7 +131,11 @@ package body CLIC.Config.Edit is
    -- Unset --
    -----------
 
-   function Unset (Path : String; Key : Config_Key) return Boolean is
+   function Unset (Path  : String;
+                   Key   : Config_Key;
+                   Quiet : Boolean := False)
+                   return Boolean
+   is
       use AAA.Directories;
 
       Tmp : Replacer := New_Replacement (File              => Path,
@@ -136,11 +147,13 @@ package body CLIC.Config.Edit is
 
       if Table.Is_Null then
          --  The configuration file doesn't exist or is not valid
-         Trace.Error ("configuration file doesn't exist or is not valid");
+         if not Quiet then
+            Trace.Error ("configuration file doesn't exist or is not valid");
+         end if;
          return False;
       end if;
 
-      if not Remove_From_Table (Table, Key) then
+      if not Remove_From_Table (Table, Key, Quiet) then
          return False;
       end if;
 
