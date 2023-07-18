@@ -1,10 +1,12 @@
 package CLIC.Config.Edit is
 
-   function Unset (Path : String;
-                   Key  : Config_Key)
+   function Unset (Path  : String;
+                   Key   : Config_Key;
+                   Quiet : Boolean := False)
                    return Boolean;
    --  Unset/Remove a key from a configuration file. Return True in case of
    --  success or False when the configuration file or the key don't exist.
+   --  if Quiet, don't print error messages when returning False.
 
    function Set (Path  : String;
                  Key   : Config_Key;

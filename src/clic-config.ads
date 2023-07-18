@@ -92,6 +92,12 @@ package CLIC.Config with Preelaborate is
    --  not as an Float, an error message is displayed and the Default value
    --  is returned.
 
+   function Origin (This : Instance;
+                    Key  : Config_Key)
+                    return String
+     with Post => (This.Defined (Key) or else Origin'Result = "");
+   --  Return the origin of a key or "" otherwise
+
    procedure Clear (This : in out Instance);
    --  Remove all configuration keys
 

@@ -296,4 +296,15 @@ package body CLIC.Config is
       end case;
    end Image;
 
+   ------------
+   -- Origin --
+   ------------
+
+   function Origin (This : Instance;
+                    Key  : Config_Key)
+                    return String
+   is (if This.Defined (Key)
+       then To_String (This.Config_Map (+Key).Origin)
+       else "");
+
 end CLIC.Config;
