@@ -20,8 +20,10 @@ generic
    --  Used to signal that the program should terminate with the give error
    --  code. Typicaly use GNAT.OS_Lib.OS_Exit.
 
-   --  The procedures below are used to format the output such as usage and
-   --  help. Use CLIC.Subcommand.No_TTY if you don't want or need formating.
+   --  The functions below are used to format the output such as usage and
+   --  help. Use CLIC.Subcommand.No_TTY if you don't want or need formatting.
+   --  CLIC also provides ready implementations in CLIC.Formatter, CLIC.TTY
+   --  and CLIC.Markdown.
    with function TTY_Chapter (Str : String) return String;
    with function TTY_Description (Str : String) return String;
    with function TTY_Version (Str : String) return String;

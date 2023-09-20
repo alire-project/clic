@@ -494,7 +494,7 @@ package body CLIC.Subcommand.Instance is
          Table.Append (TTY_Description ("<arguments>"));
          Table.Append ("List of arguments for the command");
 
-         Table.Print (Separator => "   ",
+         Table.Print (Separator => "  ",
                       Put_Line  => Put_Line_For_Access'Access);
       end;
 

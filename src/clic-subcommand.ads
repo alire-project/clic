@@ -165,7 +165,7 @@ package CLIC.Subcommand is
    function No_TTY (Str : String) return String
    is (Str);
    --  Use this function for the TTY_* generic parameters of
-   --  CLIC.Subcommand.Instance if you don't want or need TTY formating.
+   --  CLIC.Subcommand.Instance if you don't want or need TTY formatting.
 
 private
 
