@@ -444,7 +444,9 @@ package body CLIC.Subcommand.Instance is
 
       Display_Options (Config, "OPTIONS");
 
-      Display_Global_Options;
+      if Global_Options_In_subcommand_help then
+         Display_Global_Options;
+      end if;
 
       --  Format and print the long command description
       Put_Line ("");
