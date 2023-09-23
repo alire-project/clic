@@ -494,7 +494,7 @@ package body CLIC.Subcommand.Instance is
          Table.Append (TTY_Description ("<arguments>"));
          Table.Append ("List of arguments for the command");
 
-         Table.Print (Separator => "   ",
+         Table.Print (Separator => "  ",
                       Put_Line  => Put_Line_For_Access'Access);
       end;
 
@@ -953,6 +953,46 @@ package body CLIC.Subcommand.Instance is
          Error_Exit (1);
       end if;
    end Display_Help;
+
+   ----------------------
+   -- Iterate_Commands --
+   ----------------------
+
+   procedure Iterate_Commands
+     (Process  : not null access procedure (Group : Ada.Strings.Unbounded.Unbounded_String;
+                                            Cmd : not null Command_Access)) is
+      use Command_Maps;
+      use Group_Maps;
+   begin
+
+      for Iter in Registered_Groups.Iterate loop
+
+         declare
+            Group : constant Unbounded_String := Key (Iter);
+         begin
+
+            for Name of Element (Iter) loop
+               Process (Group, Registered_Commands (To_Unbounded_String (Name)));
+            end loop;
+         end;
+      end loop;
+
+   end Iterate_Commands;
+
+   --------------------
+   -- Iterate_Topics --
+   --------------------
+
+   procedure Iterate_Topics
+     (Process  : not null access procedure (Cmd : not null Help_Topic_Access)) is
+   begin
+
+      for Topic of Registered_Topics loop
+        Process (Topic);
+      end loop;
+
+   end Iterate_Topics;
+
 
    -------------
    -- Execute --
