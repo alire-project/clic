@@ -33,6 +33,10 @@ generic
    with function TTY_Emph (Str : String) return String;
    with function TTY_Terminal (Str : String) return String;
 
+   Global_Options_In_subcommand_help : Boolean := True;
+   --  When listing help for a subcommand, also include a section on global
+   --  options (that apply to all subcommands).
+
 package CLIC.Subcommand.Instance is
 
    procedure Register (Cmd : not null Command_Access);
