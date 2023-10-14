@@ -885,7 +885,9 @@ package body CLIC.Subcommand.Instance is
             Table.Append (TTY_Description (With_Arg (Short_Switch, Arg)));
          end if;
 
-         Table.Append (Help);
+         --  Adding two spaces at the end will ensure a new line when printing in
+         --  markdown format.
+         Table.Append (Help & "  ");
 
          Has_Printable_Rows := True;
       end Print_Row;
