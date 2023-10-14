@@ -18,5 +18,6 @@ is
    function Version (Str : String) return String;
    function Underline (Str : String) return String;
    function Emph (Str : String) return String;
+   function Terminal (Str : String) return String;
 
 end CLIC.Formatter;

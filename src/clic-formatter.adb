@@ -19,7 +19,6 @@ package body CLIC.Formatter is
       then Markdown.Chapter (Str)
       else TTY.Bold (Str));
 
-
    function Description (Str : String) return String is
      (if Markdown_Enabled
       then Markdown.Code (Str)
@@ -32,13 +31,19 @@ package body CLIC.Formatter is
 
    function Underline (Str : String) return String is
      (if Markdown_Enabled
-      then Markdown.Bold (Str)
+      then Str
       else TTY.Underline (Str));
 
+   -- Emph is used to highlight switches, so we use Code for the markdown
+   -- version.
    function Emph (Str : String) return String is
      (if Markdown_Enabled
       then Markdown.Code (Str)
       else TTY.Emph (Str));
 
+   function Terminal (Str : String) return String is
+     (if Markdown_Enabled
+      then Markdown.Code (Str)
+      else TTY.Terminal (Str));
 
 end CLIC.Formatter;

@@ -396,7 +396,7 @@ package body CLIC.Subcommand.Instance is
          Table.Append (Tab);
          Table.Append (TTY_Description (To_String (Key (Elt))));
          Table.Append (Tab);
-         Table.Append (Element (Elt).Flatten);
+         Table.Append (TTY_Terminal (Element (Elt).Flatten));
       end loop;
 
       Table.Print (Separator => "  ", Put_Line =>  Put_Line_For_Access'Access);
@@ -418,11 +418,11 @@ package body CLIC.Subcommand.Instance is
       Put_Line (TTY_Chapter ("USAGE"));
       Put ("   ");
       Put_Line
-        (TTY_Underline (Main_Command_Name) &
+        (TTY_Terminal (TTY_Underline (Main_Command_Name) &
            " " &
          TTY_Underline (Cmd.Name) &
          " [options] " &
-         Cmd.Usage_Custom_Parameters);
+         Cmd.Usage_Custom_Parameters));
 
       --  We use the following two canaries to detect if a command is adding
       --  its own switches, in which case we need to show their specific help.
@@ -470,13 +470,13 @@ package body CLIC.Subcommand.Instance is
       end if;
 
       Put_Line (TTY_Chapter ("USAGE"));
-      Put_Line ("   " & TTY_Underline (Main_Command_Name) &
+      Put_Line ("   " & TTY_Terminal (TTY_Underline (Main_Command_Name) &
                   " [global options] " &
-                  "<command> [command options] [<arguments>]");
+                  "<command> [command options] [<arguments>]"));
       Put_Line ("");
-      Put_Line ("   " & TTY_Underline (Main_Command_Name) & " " &
+      Put_Line ("   " & TTY_Terminal (TTY_Underline (Main_Command_Name) & " " &
                         TTY_Underline ("help") &
-                        " [<command>|<topic>]");
+                        " [<command>|<topic>]"));
 
       Put_Line ("");
       Put_Line (TTY_Chapter ("ARGUMENTS"));
@@ -875,7 +875,7 @@ package body CLIC.Subcommand.Instance is
 
          if Has_Short and Has_Long then
             Table.Append (TTY_Description (Without_Arg (Short_Switch)) &
-              " (" & With_Arg (Long_Switch, Arg) & ")");
+              " (" & TTY_Description (With_Arg (Long_Switch, Arg)) & ")");
          elsif not Has_Short and Has_Long then
             Table.Append (TTY_Description (With_Arg (Long_Switch, Arg)));
          elsif Has_Short and not Has_Long then
@@ -1011,8 +1011,8 @@ package body CLIC.Subcommand.Instance is
          end if;
 
          Put_Line (TTY_Chapter ("USAGE"));
-         Put_Line ("   " & TTY_Underline (Main_Command_Name) & " " &
-           TTY_Underline ("help") & " [<command>|<topic>]");
+         Put_Line ("   " & TTY_Terminal (TTY_Underline (Main_Command_Name) & " " &
+           TTY_Underline ("help") & " [<command>|<topic>]"));
 
             Put_Line ("");
          Put_Line (TTY_Chapter ("ARGUMENTS"));

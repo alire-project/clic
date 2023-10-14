@@ -31,6 +31,7 @@ generic
    with function TTY_Version (Str : String) return String;
    with function TTY_Underline (Str : String) return String;
    with function TTY_Emph (Str : String) return String;
+   with function TTY_Terminal (Str : String) return String;
 
 package CLIC.Subcommand.Instance is
 
@@ -131,9 +132,9 @@ private
    is (AAA.Strings.Empty_Vector
        .Append ("Shows information about commands and topics.")
        .Append ("See available commands with '" &
-           Main_Command_Name & " help commands'")
+           TTY_Terminal (Main_Command_Name & " help commands") & "'")
        .Append ("See available topics with '" &
-           Main_Command_Name & " help topics'."));
+           TTY_Terminal (Main_Command_Name & " help topics") & "'."));
 
    overriding
    procedure Setup_Switches

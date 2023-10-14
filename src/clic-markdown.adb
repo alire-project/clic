@@ -6,11 +6,7 @@ package body CLIC.Markdown is
      ("### " & Str);
 
    function Plain_Text (Str : String) return String is
-      Markdown : String := Str;
-   begin
-      return AAA.Strings.Replace
-        (Markdown, "[", "\[");
-   end Plain_Text;
+      (Str);
 
    function Code (Str : String) return String is
      ('`' & Str & '`');
