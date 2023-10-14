@@ -389,6 +389,7 @@ package body CLIC.Subcommand.Instance is
          return;
       end if;
 
+      Put_Line ("");
       Put_Line (TTY_Chapter ("ALIASES"));
 
       for Elt in Registered_Aliases.Iterate loop
