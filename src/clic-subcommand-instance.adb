@@ -539,14 +539,20 @@ package body CLIC.Subcommand.Instance is
          Cmd_Line : constant AAA.Strings.Vector :=
            (if Command_Line.Is_Empty then Ada_Command_Line else Command_Line);
 
+         Before_Double_Dash : Boolean := True;
+         --  After "--" a request for help is not directed to ourselves
       begin
          --  GNAT switch handling intercepts -h/--help. To have the same output
          --  for '<main> -h command' and '<main> help command', we do manual
          for Arg of Cmd_Line loop
-            if Arg not in "-h" | "--help" then
-               Arguments.Append (Arg);
-            else
+            if Arg = "--" then
+               Before_Double_Dash := False;
+            end if;
+
+            if Before_Double_Dash and then Arg in "-h" | "--help" then
                Help_Requested := True;
+            else
+               Arguments.Append (Arg);
             end if;
          end loop;
          return To_Argument_List (Arguments);
