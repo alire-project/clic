@@ -389,6 +389,7 @@ package body CLIC.Subcommand.Instance is
          return;
       end if;
 
+      Put_Line ("");
       Put_Line (TTY_Chapter ("ALIASES"));
 
       for Elt in Registered_Aliases.Iterate loop
@@ -396,7 +397,7 @@ package body CLIC.Subcommand.Instance is
          Table.Append (Tab);
          Table.Append (TTY_Description (To_String (Key (Elt))));
          Table.Append (Tab);
-         Table.Append (Element (Elt).Flatten);
+         Table.Append (TTY_Terminal (Element (Elt).Flatten));
       end loop;
 
       Table.Print (Separator => "  ", Put_Line =>  Put_Line_For_Access'Access);
@@ -418,11 +419,11 @@ package body CLIC.Subcommand.Instance is
       Put_Line (TTY_Chapter ("USAGE"));
       Put ("   ");
       Put_Line
-        (TTY_Underline (Main_Command_Name) &
+        (TTY_Terminal (TTY_Underline (Main_Command_Name) &
            " " &
          TTY_Underline (Cmd.Name) &
          " [options] " &
-         Cmd.Usage_Custom_Parameters);
+         Cmd.Usage_Custom_Parameters));
 
       --  We use the following two canaries to detect if a command is adding
       --  its own switches, in which case we need to show their specific help.
@@ -472,13 +473,13 @@ package body CLIC.Subcommand.Instance is
       end if;
 
       Put_Line (TTY_Chapter ("USAGE"));
-      Put_Line ("   " & TTY_Underline (Main_Command_Name) &
+      Put_Line ("   " & TTY_Terminal (TTY_Underline (Main_Command_Name) &
                   " [global options] " &
-                  "<command> [command options] [<arguments>]");
+                  "<command> [command options] [<arguments>]"));
       Put_Line ("");
-      Put_Line ("   " & TTY_Underline (Main_Command_Name) & " " &
+      Put_Line ("   " & TTY_Terminal (TTY_Underline (Main_Command_Name) & " " &
                         TTY_Underline ("help") &
-                        " [<command>|<topic>]");
+                        " [<command>|<topic>]"));
 
       Put_Line ("");
       Put_Line (TTY_Chapter ("ARGUMENTS"));
@@ -496,7 +497,7 @@ package body CLIC.Subcommand.Instance is
          Table.Append (TTY_Description ("<arguments>"));
          Table.Append ("List of arguments for the command");
 
-         Table.Print (Separator => "   ",
+         Table.Print (Separator => "  ",
                       Put_Line  => Put_Line_For_Access'Access);
       end;
 
@@ -883,14 +884,16 @@ package body CLIC.Subcommand.Instance is
 
          if Has_Short and Has_Long then
             Table.Append (TTY_Description (Without_Arg (Short_Switch)) &
-              " (" & With_Arg (Long_Switch, Arg) & ")");
+              " (" & TTY_Description (With_Arg (Long_Switch, Arg)) & ")");
          elsif not Has_Short and Has_Long then
             Table.Append (TTY_Description (With_Arg (Long_Switch, Arg)));
          elsif Has_Short and not Has_Long then
             Table.Append (TTY_Description (With_Arg (Short_Switch, Arg)));
          end if;
 
-         Table.Append (Help);
+         --  Adding two spaces at the end will ensure a new line when printing in
+         --  markdown format.
+         Table.Append (Help & "  ");
 
          Has_Printable_Rows := True;
       end Print_Row;
@@ -962,6 +965,46 @@ package body CLIC.Subcommand.Instance is
       end if;
    end Display_Help;
 
+   ----------------------
+   -- Iterate_Commands --
+   ----------------------
+
+   procedure Iterate_Commands
+     (Process  : not null access procedure (Group : Ada.Strings.Unbounded.Unbounded_String;
+                                            Cmd : not null Command_Access)) is
+      use Command_Maps;
+      use Group_Maps;
+   begin
+
+      for Iter in Registered_Groups.Iterate loop
+
+         declare
+            Group : constant Unbounded_String := Key (Iter);
+         begin
+
+            for Name of Element (Iter) loop
+               Process (Group, Registered_Commands (To_Unbounded_String (Name)));
+            end loop;
+         end;
+      end loop;
+
+   end Iterate_Commands;
+
+   --------------------
+   -- Iterate_Topics --
+   --------------------
+
+   procedure Iterate_Topics
+     (Process  : not null access procedure (Cmd : not null Help_Topic_Access)) is
+   begin
+
+      for Topic of Registered_Topics loop
+        Process (Topic);
+      end loop;
+
+   end Iterate_Topics;
+
+
    -------------
    -- Execute --
    -------------
@@ -979,8 +1022,8 @@ package body CLIC.Subcommand.Instance is
          end if;
 
          Put_Line (TTY_Chapter ("USAGE"));
-         Put_Line ("   " & TTY_Underline (Main_Command_Name) & " " &
-           TTY_Underline ("help") & " [<command>|<topic>]");
+         Put_Line ("   " & TTY_Terminal (TTY_Underline (Main_Command_Name) & " " &
+           TTY_Underline ("help") & " [<command>|<topic>]"));
 
             Put_Line ("");
          Put_Line (TTY_Chapter ("ARGUMENTS"));

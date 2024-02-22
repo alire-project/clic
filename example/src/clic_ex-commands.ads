@@ -2,7 +2,7 @@
 private with Ada.Text_IO;
 private with GNAT.OS_Lib;
 private with CLIC.Subcommand.Instance;
-private with CLIC.TTY;
+private with CLIC.Formatter;
 private with CLIC.Config;
 
 package CLIC_Ex.Commands is
@@ -24,9 +24,9 @@ private
       Put_Line            => Ada.Text_IO.Put_Line,
       Put_Error           => Ada.Text_IO.Put_Line,
       Error_Exit          => GNAT.OS_Lib.OS_Exit,
-      TTY_Chapter         => CLIC.TTY.Info,
-      TTY_Description     => CLIC.TTY.Description,
-      TTY_Version         => CLIC.TTY.Version,
-      TTY_Underline       => CLIC.TTY.Underline,
-      TTY_Emph            => CLIC.TTY.Emph);
+      TTY_Chapter         => CLIC.Formatter.Chapter,
+      TTY_Description     => CLIC.Formatter.Description,
+      TTY_Version         => CLIC.Formatter.Version,
+      TTY_Underline       => CLIC.Formatter.Underline,
+      TTY_Emph            => CLIC.Formatter.Emph);
 end CLIC_Ex.Commands;

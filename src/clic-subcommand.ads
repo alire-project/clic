@@ -138,7 +138,7 @@ package CLIC.Subcommand is
    -----------------
 
    type Help_Topic is limited interface;
-   --  This type encapsulate the content of an "help topic", i.e. a piece of
+   --  This type encapsulates the content of an "help topic", i.e. a piece of
    --  documentation that can displayed from the command line.
 
    type Help_Topic_Access is access all Help_Topic'Class;
@@ -165,7 +165,7 @@ package CLIC.Subcommand is
    function No_TTY (Str : String) return String
    is (Str);
    --  Use this function for the TTY_* generic parameters of
-   --  CLIC.Subcommand.Instance if you don't want or need TTY formating.
+   --  CLIC.Subcommand.Instance if you don't want or need TTY formatting.
 
 private
 

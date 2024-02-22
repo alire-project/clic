@@ -1,5 +1,7 @@
 --  Instantiate this package to create a sub-command parser/executor
 
+with Ada.Strings.Unbounded;
+
 with CLIC.Config;
 
 generic
@@ -20,13 +22,16 @@ generic
    --  Used to signal that the program should terminate with the give error
    --  code. Typicaly use GNAT.OS_Lib.OS_Exit.
 
-   --  The procedures below are used to format the output such as usage and
-   --  help. Use CLIC.Subcommand.No_TTY if you don't want or need formating.
+   --  The functions below are used to format the output such as usage and
+   --  help. Use CLIC.Subcommand.No_TTY if you don't want or need formatting.
+   --  CLIC also provides ready implementations in CLIC.Formatter, CLIC.TTY
+   --  and CLIC.Markdown.
    with function TTY_Chapter (Str : String) return String;
    with function TTY_Description (Str : String) return String;
    with function TTY_Version (Str : String) return String;
    with function TTY_Underline (Str : String) return String;
    with function TTY_Emph (Str : String) return String;
+   with function TTY_Terminal (Str : String) return String;
 
    Global_Options_In_subcommand_help : Boolean := True;
    --  When listing help for a subcommand, also include a section on global
@@ -89,6 +94,16 @@ package CLIC.Subcommand.Instance is
 
    procedure Display_Help (Keyword : String);
 
+   procedure Iterate_Commands
+     (Process  : not null access procedure (Group : Ada.Strings.Unbounded.Unbounded_String;
+                                            Cmd : not null Command_Access));
+   -- Iterate over all registered commands sorted by group applying Process
+
+   procedure Iterate_Topics
+     (Process  : not null access procedure (Cmd : not null Help_Topic_Access));
+   -- Iterate all registered topics applying Process
+
+
    Error_No_Command : exception;
    Command_Already_Defined : exception;
 
@@ -121,9 +136,9 @@ private
    is (AAA.Strings.Empty_Vector
        .Append ("Shows information about commands and topics.")
        .Append ("See available commands with '" &
-           Main_Command_Name & " help commands'")
+           TTY_Terminal (Main_Command_Name & " help commands") & "'")
        .Append ("See available topics with '" &
-           Main_Command_Name & " help topics'."));
+           TTY_Terminal (Main_Command_Name & " help topics") & "'."));
 
    overriding
    procedure Setup_Switches

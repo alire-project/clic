@@ -1,6 +1,6 @@
 with AAA.Strings;
 
-with CLIC.TTY;
+with CLIC.Formatter;
 with CLIC.User_Input;
 with CLIC.Config.Load;
 
@@ -21,6 +21,9 @@ package body CLIC_Ex.Commands is
 
    No_TTY : aliased Boolean := False;
    --  Used to disable control characters in output
+
+   Markdown_Help : aliased Boolean := False;
+   --  Used to enable help display in markdown format
 
    -------------------------
    -- Set_Global_Switches --
@@ -50,6 +53,13 @@ package body CLIC_Ex.Commands is
                      No_TTY'Access,
                      Long_Switch => "--no-tty",
                      Help        => "Disables control characters in output");
+
+      Define_Switch (Config,
+                     Markdown_Help'Access,
+                     Long_Switch => "--markdown",
+                     Help        =>
+                       "Enables output of markdown format for help");
+
    end Set_Global_Switches;
 
    -------------
@@ -61,11 +71,15 @@ package body CLIC_Ex.Commands is
       Sub_Cmd.Parse_Global_Switches;
 
       if No_TTY then
-         CLIC.TTY.Force_Disable_TTY;
+         CLIC.Formatter.Force_Disable_TTY;
+      end if;
+
+      if Markdown_Help then
+         CLIC.Formatter.Enable_Markdown;
       end if;
 
       if not No_Color and then not No_TTY then
-         CLIC.TTY.Enable_Color (Force => False);
+         CLIC.Formatter.Enable_Color (Force => False);
          --  This may still not enable color if TTY is detected to be incapable
       end if;
 
