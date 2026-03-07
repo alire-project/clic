@@ -829,7 +829,10 @@ package body CLIC.Command_Line is
 
                   else
                      Parser.Current_Index := End_Index + 1;
-                     raise Invalid_Parameter;
+                     raise Invalid_Parameter with
+                       "Switch "
+                       & Argument (Parser, Parser.Current_Argument)
+                       & " requires argument";
                   end if;
 
                --  Case of switch of the form <switch> xxx
@@ -849,7 +852,10 @@ package body CLIC.Command_Line is
 
                else
                   Parser.Current_Index := End_Index + 1;
-                  raise Invalid_Parameter;
+                  raise Invalid_Parameter with
+                    "Switch "
+                    & Argument (Parser, Parser.Current_Argument)
+                    & " requires argument";
                end if;
 
             when Parameter_No_Space =>
