@@ -1,6 +1,6 @@
 with AAA.Strings;
 
-with CLIC.Formatter;
+with CLIC.Markup;
 with CLIC.User_Input;
 with CLIC.Config.Load;
 
@@ -71,15 +71,15 @@ package body CLIC_Ex.Commands is
       Sub_Cmd.Parse_Global_Switches;
 
       if No_TTY then
-         CLIC.Formatter.Force_Disable_TTY;
+         CLIC.Markup.Force_Disable_TTY;
       end if;
 
       if Markdown_Help then
-         CLIC.Formatter.Enable_Markdown;
+         CLIC.Markup.Enable_Markdown;
       end if;
 
       if not No_Color and then not No_TTY then
-         CLIC.Formatter.Enable_Color (Force => False);
+         CLIC.Markup.Enable_Color (Force => False);
          --  This may still not enable color if TTY is detected to be incapable
       end if;
 

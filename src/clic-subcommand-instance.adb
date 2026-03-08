@@ -891,8 +891,8 @@ package body CLIC.Subcommand.Instance is
             Table.Append (TTY_Description (With_Arg (Short_Switch, Arg)));
          end if;
 
-         --  Adding two spaces at the end will ensure a new line when printing in
-         --  markdown format.
+         --  Adding two spaces at the end will ensure a new line when printing
+         --  in markdown format.
          Table.Append (Help & "  ");
 
          Has_Printable_Rows := True;
@@ -970,8 +970,10 @@ package body CLIC.Subcommand.Instance is
    ----------------------
 
    procedure Iterate_Commands
-     (Process  : not null access procedure (Group : Ada.Strings.Unbounded.Unbounded_String;
-                                            Cmd : not null Command_Access)) is
+     (Process  : not null access procedure
+       (Group : Ada.Strings.Unbounded.Unbounded_String;
+        Cmd : not null Command_Access))
+   is
       use Command_Maps;
       use Group_Maps;
    begin
@@ -983,7 +985,8 @@ package body CLIC.Subcommand.Instance is
          begin
 
             for Name of Element (Iter) loop
-               Process (Group, Registered_Commands (To_Unbounded_String (Name)));
+               Process (Group,
+                        Registered_Commands (To_Unbounded_String (Name)));
             end loop;
          end;
       end loop;
@@ -995,15 +998,15 @@ package body CLIC.Subcommand.Instance is
    --------------------
 
    procedure Iterate_Topics
-     (Process  : not null access procedure (Cmd : not null Help_Topic_Access)) is
+     (Process : not null access procedure (Cmd : not null Help_Topic_Access))
+   is
    begin
 
       for Topic of Registered_Topics loop
-        Process (Topic);
+         Process (Topic);
       end loop;
 
    end Iterate_Topics;
-
 
    -------------
    -- Execute --
@@ -1022,8 +1025,8 @@ package body CLIC.Subcommand.Instance is
          end if;
 
          Put_Line (TTY_Chapter ("USAGE"));
-         Put_Line ("   " & TTY_Terminal (TTY_Underline (Main_Command_Name) & " " &
-           TTY_Underline ("help") & " [<command>|<topic>]"));
+         Put_Line ("   " & TTY_Terminal (TTY_Underline (Main_Command_Name)
+           & " " & TTY_Underline ("help") & " [<command>|<topic>]"));
 
             Put_Line ("");
          Put_Line (TTY_Chapter ("ARGUMENTS"));

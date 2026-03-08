@@ -1,7 +1,7 @@
 with CLIC.TTY;
 with CLIC.Markdown;
 
-package body CLIC.Formatter is
+package body CLIC.Markup is
 
    Markdown_Enabled : Boolean := False;
 
@@ -34,8 +34,8 @@ package body CLIC.Formatter is
       then Str
       else TTY.Underline (Str));
 
-   -- Emph is used to highlight switches, so we use Code for the markdown
-   -- version.
+   --  Emph is used to highlight switches, so we use Code for the markdown
+   --  version.
    function Emph (Str : String) return String is
      (if Markdown_Enabled
       then Markdown.Code (Str)
@@ -46,4 +46,4 @@ package body CLIC.Formatter is
       then Markdown.Code (Str)
       else TTY.Terminal (Str));
 
-end CLIC.Formatter;
+end CLIC.Markup;

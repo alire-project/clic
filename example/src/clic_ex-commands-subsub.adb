@@ -23,11 +23,12 @@ package body CLIC_Ex.Commands.Subsub is
          Put_Line            => Ada.Text_IO.Put_Line,
          Put_Error           => Ada.Text_IO.Put_Line,
          Error_Exit          => GNAT.OS_Lib.OS_Exit,
-         TTY_Chapter         => CLIC.Formatter.Chapter,
-         TTY_Description     => CLIC.Formatter.Description,
-         TTY_Version         => CLIC.Formatter.Version,
-         TTY_Underline       => CLIC.Formatter.Underline,
-         TTY_Emph            => CLIC.Formatter.Emph);
+         TTY_Chapter         => CLIC.Markup.Chapter,
+         TTY_Description     => CLIC.Markup.Description,
+         TTY_Version         => CLIC.Markup.Version,
+         TTY_Underline       => CLIC.Markup.Underline,
+         TTY_Emph            => CLIC.Markup.Emph,
+         TTY_Terminal        => CLIC.Markup.Terminal);
    begin
       Sub.Register (new Sub.Builtin_Help);
       Sub.Register (new CLIC_Ex.Commands.TTY.Instance);
