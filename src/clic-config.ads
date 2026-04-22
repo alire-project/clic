@@ -29,7 +29,7 @@ package CLIC.Config with Preelaborate is
      access function (Key : Config_Key; Value : TOML.TOML_Value)
                       return Boolean;
    --  Return False when a Key/Value combination is not valid. Can be used to
-   --  check formating of string value like email address for instance.
+   --  check formatting of string value like email address for instance.
 
    procedure Import (This   : in out Instance;
                      Table  :        TOML.TOML_Value;
