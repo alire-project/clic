@@ -998,7 +998,7 @@ package body CLIC.Subcommand.Instance is
    --------------------
 
    procedure Iterate_Topics
-     (Process : not null access procedure (Cmd : not null Help_Topic_Access))
+     (Process : not null access procedure (Topic : not null Help_Topic_Access))
    is
    begin
 

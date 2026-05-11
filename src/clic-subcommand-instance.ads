@@ -101,7 +101,8 @@ package CLIC.Subcommand.Instance is
    --  Iterate over all registered commands sorted by group applying Process
 
    procedure Iterate_Topics
-     (Process  : not null access procedure (Topic : not null Help_Topic_Access));
+     (Process  : not null access
+                 procedure (Topic : not null Help_Topic_Access));
    --  Iterate all registered topics applying Process
 
    Error_No_Command : exception;
