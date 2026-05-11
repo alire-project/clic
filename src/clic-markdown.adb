@@ -1,4 +1,3 @@
-with AAA.Strings;
 
 package body CLIC.Markdown is
 
@@ -12,7 +11,7 @@ package body CLIC.Markdown is
      ('`' & Str & '`');
 
    function Bold (Str : String) return String is
-     ('*' & Str & '*');
+     ("**" & Str & "**");
 
    function Italic (Str : String) return String is
      ('_' & Str & '_');

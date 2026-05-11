@@ -139,7 +139,7 @@ package CLIC.Subcommand is
 
    type Help_Topic is limited interface;
    --  This type encapsulates the content of an "help topic", i.e. a piece of
-   --  documentation that can displayed from the command line.
+   --  documentation that can be displayed from the command line.
 
    type Help_Topic_Access is access all Help_Topic'Class;
 
