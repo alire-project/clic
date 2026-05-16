@@ -1,3 +1,4 @@
+with AAA.Strings;
 
 package body CLIC.Markdown is
 
@@ -8,7 +9,10 @@ package body CLIC.Markdown is
       (Str);
 
    function Code (Str : String) return String is
-     ('`' & Str & '`');
+     (if AAA.Strings.Contains (Str, "`") then
+        "``" & Str & "``"
+      else
+        '`' & Str & '`');
 
    function Bold (Str : String) return String is
      ("**" & Str & "**");

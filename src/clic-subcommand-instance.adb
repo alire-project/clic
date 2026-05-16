@@ -801,6 +801,7 @@ package body CLIC.Subcommand.Instance is
 
       Words : AAA.Strings.Vector := AAA.Strings.Split (Line, Separator => ' ');
       I, J  : Vectors.Cursor;
+      Inside_Code : Boolean := False;
    begin
       I := Words.First;
       while Has_Element (I) loop
@@ -808,10 +809,22 @@ package body CLIC.Subcommand.Instance is
             Word : constant String := Element (I);
          begin
             J := Next (I);
-            if Has_Prefix (Word, "--") and then Word'Length > 2
+
+            --  Check if we are already inside a markdown formatted code block
+            --  to avoid highlighting switches in there.
+            if Has_Prefix (Word, "`") then
+               Inside_Code := not Inside_Code;
+            end if;
+
+            if not Inside_Code
+              and then Word'Length > 2
+              and then Has_Prefix (Word, "--")
             then
                Words.Insert (Before => J, New_Item => Highlight (Word));
                Words.Delete (I);
+            end if;
+            if Has_Suffix (Word, "`") then
+               Inside_Code := not Inside_Code;
             end if;
             I := J;
          end;
