@@ -22,7 +22,7 @@ package CLIC.Config.Edit is
    --  can print an error message explaining why the key/value is invalid.
 
    generic
-      type Value_Type is private;       -- The Ada type to store
+      type Value_Type (<>) is private;  -- The Ada type to store
       TOML_Type : TOML.Atom_Value_Kind; -- The TOML type it must match
       with function Image (Value : Value_Type) return String;
       --  This should be Value_Type'Image
