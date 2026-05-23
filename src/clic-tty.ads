@@ -19,7 +19,7 @@ is
 
    procedure Force_Disable_TTY
      with Post => not Is_TTY;
-   --  Disable TTY support even if availabe
+   --  Disable TTY support even if available
 
    --------------------
    -- Color enabling --
