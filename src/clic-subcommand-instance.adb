@@ -649,6 +649,17 @@ package body CLIC.Subcommand.Instance is
       Parser : Opt_Parser;
       --  Subcommand parser, declared here so it is available to the exception
       --  handler below.
+
+      function Commands_To_Vector return AAA.Strings.Vector is
+         Result : AAA.Strings.Vector := AAA.Strings.Empty_Vector;
+      begin
+         for C in Registered_Commands.Iterate loop
+            AAA.Strings.Append (Result, To_String(Command_Maps.Key (C)));
+         end loop;
+
+         return Result;
+      end Commands_To_Vector;
+      --  Need to convert commands to accepted type by Clic.Utils.Suggestion
    begin
 
       Parse_Global_Switches (Command_Line);
@@ -772,7 +783,9 @@ package body CLIC.Subcommand.Instance is
          Put_Line ("");
 
          if Misstyping_Correction_Distance /= 0 then
-            Closest_Command (Global_Arguments.First_Element);
+            Put_Line (CLIC.Utils.Suggestion (
+              Global_Arguments.First_Element,
+              Commands_To_Vector));
          else
             Display_Usage (Displayed_Error => True);
          end if;
@@ -1046,29 +1059,5 @@ package body CLIC.Subcommand.Instance is
       GNAT.OS_Lib.Free (Command_Line);
       return Result;
    end Is_Global_Switch;
-
-   -----------------------
-   --  Closest_Command  --
-   -----------------------
-
-   procedure Closest_Command (User_Input : String) is
-      Least_Distance : Natural := Natural'Last;
-      Closest_Command : Command_Access;
-      Distance : Natural := Natural'Last;
-   begin
-      for Cmd of Registered_Commands loop
-         Distance := CLIC.Utils.Levenshtein_Edit_Distance (User_Input, Cmd.Name);
-         if Distance < Least_Distance then
-            Least_Distance := Distance;
-            Closest_Command := Cmd;
-         end if;
-      end loop;
-
-      if Least_Distance < Misstyping_Correction_Distance then
-         Put_Line ("Most similar command is " & Closest_Command.Name);
-      else
-         Display_Usage (Displayed_Error => True);
-      end if;
-   end Closest_Command;
 
 end CLIC.Subcommand.Instance;

@@ -35,7 +35,7 @@ generic
    Misstyping_Correction_Distance : Natural := 0;
    --  Suggest the closesed command when user misstypes. Takes the Levenshtein
    --  edit distance as a parameter.
-   --  Is Disabled when 0 and always enabled when Natrual'Least.
+   --  Is Disabled when 0 and always enabled when Natrual'Last.
    --  Has to be applied to subcommands as well.
 
 package CLIC.Subcommand.Instance is
@@ -144,7 +144,5 @@ private
    overriding
    function Usage_Custom_Parameters (This : Builtin_Help) return String
      is ("[<command>|<topic>]");
-
-   procedure Closest_Command (User_Input : String);
 
 end CLIC.Subcommand.Instance;

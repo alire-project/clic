@@ -1,4 +1,7 @@
-package body CLIC.Utils is
+with TOML; use TOML;
+
+package body CLIC.Utils with Preelaborate is
+
    -------------------------------
    -- Levenshtein_Edit_Distance --
    -------------------------------
@@ -34,4 +37,57 @@ package body CLIC.Utils is
 
       return D (D'Last (1), D'Last (2));
    end Levenshtein_Edit_Distance;
+
+   ----------------
+   -- Suggestion --
+   ----------------
+
+   function Suggestion (Input           : String;
+                        Possible_Values : AAA.Strings.Vector)
+     return String
+   is
+      Min_Dist : Natural := Natural'Last;
+      Dist : Natural;
+      Closest : Positive := Possible_Values.First_Index;
+   begin
+      for Index in Possible_Values.First_Index .. Possible_Values.Last_Index
+      loop
+         Dist := Levenshtein_Edit_Distance (Input, Possible_Values (Index));
+         if Dist < Min_Dist then
+            Min_Dist := Dist;
+            Closest := Index;
+         end if;
+      end loop;
+
+      declare
+         Relevant : constant Boolean := Min_Dist < Input'Length / 2;
+         --  Heuristic for relevance of suggestion
+      begin
+         if Relevant then
+            return " Did you mean '" & Possible_Values (Closest) & "'?";
+         else
+            return " Can be: " & Possible_Values.Flatten (", ") & ".";
+         end if;
+      end;
+   end Suggestion;
+
+   ---------------------
+   -- Enum_Suggestion --
+   ---------------------
+   
+   function Enum_Suggestion (Input : String) return String is
+      Possible_Values : AAA.Strings.Vector;
+   begin
+      for V in Enum loop
+         Possible_Values.Append
+           (case Transform is
+               when None       => V'Img,
+               when Lower_Case => AAA.Strings.To_Lower_Case (V'Img),
+               when Upper_Case => AAA.Strings.To_Upper_Case (V'Img),
+               when Tomify     => Tomify (V'Img));
+      end loop;
+   
+      return Suggestion (Input, Possible_Values);
+   end Enum_Suggestion;
+
 end CLIC.Utils;
