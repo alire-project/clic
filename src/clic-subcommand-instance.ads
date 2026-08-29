@@ -35,7 +35,7 @@ generic
    Misstyping_Correction_Distance : Natural := 0;
    --  Suggest the closesed command when user misstypes. Takes the Levenshtein
    --  edit distance as a parameter.
-   --  Is Disabled when 0 and always enabled when Natrual'Last.
+   --  Takes the value as the distance. Disabled when 0;
    --  Has to be applied to subcommands as well.
 
 package CLIC.Subcommand.Instance is
@@ -111,11 +111,11 @@ private
 
    overriding
    function Name (This : Builtin_Help) return Identifier
-     is ("help");
+   is ("help");
 
    overriding
    function Switch_Parsing (This : Builtin_Help) return Switch_Parsing_Kind
-     is (Parse_All);
+   is (Parse_All);
 
    overriding
    procedure Execute (This : in out Builtin_Help;
@@ -123,26 +123,26 @@ private
 
    overriding
    function Long_Description (This : Builtin_Help)
-     return AAA.Strings.Vector
-     is (AAA.Strings.Empty_Vector
+                              return AAA.Strings.Vector
+   is (AAA.Strings.Empty_Vector
        .Append ("Shows information about commands and topics.")
        .Append ("See available commands with '" &
-                Main_Command_Name & " help commands'")
+           Main_Command_Name & " help commands'")
        .Append ("See available topics with '" &
-                Main_Command_Name & " help topics'."));
+           Main_Command_Name & " help topics'."));
 
    overriding
    procedure Setup_Switches
      (This    : in out Builtin_Help;
       Config  : in out CLIC.Subcommand.Switches_Configuration)
-     is null;
+   is null;
 
    overriding
    function Short_Description (This : Builtin_Help) return String
-     is ("Shows help on the given command/topic");
+   is ("Shows help on the given command/topic");
 
    overriding
    function Usage_Custom_Parameters (This : Builtin_Help) return String
-     is ("[<command>|<topic>]");
+   is ("[<command>|<topic>]");
 
 end CLIC.Subcommand.Instance;
