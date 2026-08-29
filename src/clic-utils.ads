@@ -3,10 +3,17 @@ with AAA.Strings;
 package CLIC.Utils with Preelaborate is
 
    function Suggestion (Input           : String;
+                        Possible_Values : AAA.Strings.Vector;
+                        Distance        : Natural)
+     return String;
+   --  Return "Did you mean '<suggestion>'?" if suggestions are closer then
+   --  `Distance` and are in `Possible_Values`, otherwise return an empty string.
+
+   function Suggestion (Input           : String;
                         Possible_Values : AAA.Strings.Vector)
      return String;
    --  Return "Did you mean '<suggestion>'?" if a good enought suggestion
-   --  can be found in Possible_Value, otherwise return an empty string.
+   --  can be found in `Possible_Values`, otherwise return `Possible_Values`
 
    type String_Transform is (None, Lower_Case, Upper_Case, Tomify);
 
@@ -20,7 +27,6 @@ package CLIC.Utils with Preelaborate is
    function Tomify (Image : String) return String;
 
 private
-   --  function Tomify (Image : String) return String;
 
    function Tomify (Image : String) return String is
      (AAA.Strings.Replace

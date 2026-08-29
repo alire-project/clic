@@ -782,13 +782,19 @@ package body CLIC.Subcommand.Instance is
          Put_Error ("Unrecognized command: " & Global_Arguments.First_Element);
          Put_Line ("");
 
-         if Misstyping_Correction_Distance /= 0 then
-            Put_Line (CLIC.Utils.Suggestion (
+         declare
+            Res : constant String := CLIC.Utils.Suggestion (
               Global_Arguments.First_Element,
-              Commands_To_Vector));
-         else
-            Display_Usage (Displayed_Error => True);
-         end if;
+              Commands_To_Vector,
+              Misstyping_Correction_Distance);
+         begin
+            if Res = "" then
+               Display_Usage (Displayed_Error => True);
+            else
+               Put_Line (Res);
+            end if;
+         end;
+
          Error_Exit (1);
    end Execute;
 

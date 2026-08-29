@@ -41,12 +41,13 @@ package body CLIC.Utils with Preelaborate is
    ----------------
 
    function Suggestion (Input           : String;
-                        Possible_Values : AAA.Strings.Vector)
+                        Possible_Values : AAA.Strings.Vector;
+                        Distance        : Natural)
      return String
    is
-      Min_Dist : Natural := Natural'Last;
-      Dist : Natural;
-      Closest : Positive := Possible_Values.First_Index;
+      Min_Dist : Natural  := Natural'Last;
+      Dist     : Natural;
+      Closest  : Positive := Possible_Values.First_Index;
    begin
       for Index in Possible_Values.First_Index .. Possible_Values.Last_Index
       loop
@@ -64,9 +65,28 @@ package body CLIC.Utils with Preelaborate is
          if Relevant then
             return " Did you mean '" & Possible_Values (Closest) & "'?";
          else
-            return " Can be: " & Possible_Values.Flatten (", ") & ".";
+            return "";
          end if;
       end;
+   end Suggestion;
+
+   ----------------
+   -- Suggestion --
+   ----------------
+
+   function Suggestion (Input           : String;
+                        Possible_Values : AAA.Strings.Vector)
+     return String
+   is
+      Result : constant String := Suggestion (Input,
+                                              Possible_Values,
+                                              Distance => 0);
+   begin
+      if Result = "" then
+         return " Can be: " & Possible_Values.Flatten (", ") & ".";
+      else
+         return Result;
+      end if;
    end Suggestion;
 
    ---------------------
