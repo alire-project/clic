@@ -29,5 +29,5 @@ private
       TTY_Version         => CLIC.TTY.Version,
       TTY_Underline       => CLIC.TTY.Underline,
       TTY_Emph            => CLIC.TTY.Emph,
-      Misstyping_Correction_Distance => 3);
+      Misstyping_Correction_Distance => 4);
 end CLIC_Ex.Commands;

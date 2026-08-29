@@ -45,7 +45,7 @@ package body CLIC.Utils with Preelaborate is
                         Distance        : Natural)
      return String
    is
-      Min_Dist : Natural  := Natural'Last;
+      Min_Dist : Natural  := Distance;
       Dist     : Natural;
       Closest  : Positive := Possible_Values.First_Index;
    begin
@@ -59,7 +59,7 @@ package body CLIC.Utils with Preelaborate is
       end loop;
 
       declare
-         Relevant : constant Boolean := Min_Dist < Input'Length / 2;
+         Relevant : constant Boolean := Min_Dist < Input'Length / 2 and Min_Dist < Distance;
          --  Heuristic for relevance of suggestion
       begin
          if Relevant then
@@ -80,7 +80,7 @@ package body CLIC.Utils with Preelaborate is
    is
       Result : constant String := Suggestion (Input,
                                               Possible_Values,
-                                              Distance => 0);
+                                              Distance => Natural'Last);
    begin
       if Result = "" then
          return " Can be: " & Possible_Values.Flatten (", ") & ".";
