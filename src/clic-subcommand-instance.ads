@@ -32,6 +32,12 @@ generic
    --  When listing help for a subcommand, also include a section on global
    --  options (that apply to all subcommands).
 
+   Misstyping_Correction_Distance : Natural := 0;
+   --  Suggest the closesed command when user misstypes. Takes the Levenshtein
+   --  edit distance as a parameter.
+   --  Takes the value as the distance. Disabled when 0;
+   --  Has to be applied to subcommands as well.
+
 package CLIC.Subcommand.Instance is
 
    procedure Register (Cmd : not null Command_Access);

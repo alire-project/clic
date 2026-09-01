@@ -12,6 +12,7 @@ with AAA.Text_IO;
 
 with CLIC.Config.Info;
 with CLIC.Command_Line; use CLIC.Command_Line;
+with CLIC.Utils;
 
 package body CLIC.Subcommand.Instance is
 
@@ -648,6 +649,17 @@ package body CLIC.Subcommand.Instance is
       Parser : Opt_Parser;
       --  Subcommand parser, declared here so it is available to the exception
       --  handler below.
+
+      function Commands_To_Vector return AAA.Strings.Vector is
+         Result : AAA.Strings.Vector := AAA.Strings.Empty_Vector;
+      begin
+         for C in Registered_Commands.Iterate loop
+            AAA.Strings.Append (Result, To_String(Command_Maps.Key (C)));
+         end loop;
+
+         return Result;
+      end Commands_To_Vector;
+      --  Need to convert commands to accepted type by Clic.Utils.Suggestion
    begin
 
       Parse_Global_Switches (Command_Line);
@@ -769,7 +781,20 @@ package body CLIC.Subcommand.Instance is
       when Error_No_Command =>
          Put_Error ("Unrecognized command: " & Global_Arguments.First_Element);
          Put_Line ("");
-         Display_Usage (Displayed_Error => True);
+
+         declare
+            Res : constant String := CLIC.Utils.Suggestion (
+              Global_Arguments.First_Element,
+              Commands_To_Vector,
+              Misstyping_Correction_Distance);
+         begin
+            if Res = "" then
+               Display_Usage (Displayed_Error => True);
+            else
+               Put_Line (Res);
+            end if;
+         end;
+
          Error_Exit (1);
    end Execute;
 
