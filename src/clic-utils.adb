@@ -59,7 +59,7 @@ package body CLIC.Utils with Preelaborate is
       end loop;
 
       declare
-         Relevant : constant Boolean := Min_Dist < Input'Length / 2 and Min_Dist < Distance;
+         Relevant : constant Boolean := Min_Dist <= Input'Length / 2 and Min_Dist < Distance;
          --  Heuristic for relevance of suggestion
       begin
          if Relevant then
