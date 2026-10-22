@@ -16,7 +16,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - uses: alire-project/setup-alire@v5
+      - uses: alire-project/setup-alire@v6
+        with:
+          version: nightly # for [test] in aaa crates' manifests
       # aaa_texts is not yet released in the community index, so pin it for CI
       # only. Its own pins bring in the matching aaa, aaa_ansi and lml (pinning
       # those here too would conflict with them).
