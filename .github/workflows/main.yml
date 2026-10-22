@@ -5,14 +5,35 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Cancel a running build of the same branch/PR when a newer one starts
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
+        # Not macos-latest (macos-26): since runner image 20261013, its SDK's
+        # libSystem.tbd lists arm64e.x1, which the GNAT linker rejects
+        # ("unknown architecture"). Restore once a fixed GNAT is out.
+        os: [macos-15, windows-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - uses: alire-project/setup-alire@v5
+      - uses: alire-project/setup-alire@v6
+        with:
+          version: nightly # for [test] in aaa crates' manifests
+      # aaa_texts is not yet released in the community index, so pin it for CI
+      # only. Its own pins bring in the matching aaa, aaa_ansi and lml (pinning
+      # those here too would conflict with them).
+      - name: Pin unreleased dependencies
+        shell: bash
+        run: |
+          cat >> alire.toml <<'EOF'
+
+          [[pins]]
+          aaa_texts = { url = "https://github.com/mosteo/aaa", commit = "7799d0401c147aae8d4422eae391b5aa24748a91", subdir = "aaa_texts" }
+          EOF
       - run: alr build
       - run: cd example && alr build

@@ -17,7 +17,8 @@ Command Line Interface Components:
 """
 
 [[depends-on]]
-aaa = "~0.2.4"
+aaa = "~0.3"
+aaa_texts = "~0.4"
 simple_logging = "^1.2.0"
 ansiada = "^1.0"
-ada_toml = "~0.2|~0.3"
+ada_toml = "~0.2|~0.3|~0.4|~0.5"
