@@ -5,6 +5,11 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Cancel a running build of the same branch/PR when a newer one starts
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     strategy:
