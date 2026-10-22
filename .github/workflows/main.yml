@@ -17,5 +17,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: alire-project/setup-alire@v5
+      # aaa_texts is not yet released in the community index, so pin it for CI
+      # only. Its own pins bring in the matching aaa, aaa_ansi and lml (pinning
+      # those here too would conflict with them).
+      - name: Pin unreleased dependencies
+        shell: bash
+        run: |
+          cat >> alire.toml <<'EOF'
+
+          [[pins]]
+          aaa_texts = { url = "https://github.com/mosteo/aaa", commit = "7799d0401c147aae8d4422eae391b5aa24748a91", subdir = "aaa_texts" }
+          EOF
       - run: alr build
       - run: cd example && alr build
