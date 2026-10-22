@@ -9,7 +9,10 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
+        # Not macos-latest (macos-26): since runner image 20261013, its SDK's
+        # libSystem.tbd lists arm64e.x1, which the GNAT linker rejects
+        # ("unknown architecture"). Restore once a fixed GNAT is out.
+        os: [macos-15, windows-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
