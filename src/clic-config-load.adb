@@ -1,5 +1,7 @@
+with Ada.Exceptions;
+with Ada.Streams.Stream_IO;
+
 with GNAT.OS_Lib;
-with TOML.File_IO;
 
 with Simple_Logging;
 
@@ -23,6 +25,38 @@ package body CLIC.Config.Load is
       C.Import (Table, Origin, Check => Check);
    end From_TOML;
 
+   ---------------
+   -- Read_File --
+   ---------------
+
+   function Read_File (Path : String) return TOML.Read_Result is
+      --  Same as TOML.File_IO.Load_File, but parses the file contents from
+      --  memory. TOML.File_IO detects the end of the file by handling an
+      --  exception, and raising one is very slow on macOS for big binaries
+      --  (it unwinds the stack to record a traceback).
+      use Ada.Streams.Stream_IO;
+      File : File_Type;
+   begin
+      begin
+         Open (File, In_File, Path);
+      exception
+         when E : Name_Error | Use_Error =>
+            return (Success  => False,
+                    Message  => Ada.Strings.Unbounded.To_Unbounded_String
+                                  (Ada.Exceptions.Exception_Message (E)),
+                    Location => TOML.No_Location);
+      end;
+
+      declare
+         Contents : String (1 .. Natural (Size (File)));
+      begin
+         --  Reading exactly the file size never hits the end of the file
+         String'Read (Stream (File), Contents);
+         Close (File);
+         return TOML.Load_String (Contents);
+      end;
+   end Read_File;
+
    --------------------
    -- Load_TOML_File --
    --------------------
@@ -32,8 +66,7 @@ package body CLIC.Config.Load is
 
       if GNAT.OS_Lib.Is_Read_Accessible_File (Path) then
          declare
-            Config : constant TOML.Read_Result :=
-              TOML.File_IO.Load_File (Path);
+            Config : constant TOML.Read_Result := Read_File (Path);
          begin
             if Config.Success then
                if Config.Value.Kind /= TOML.TOML_Table then
