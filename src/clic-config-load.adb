@@ -5,6 +5,8 @@ with GNAT.OS_Lib;
 
 with Simple_Logging;
 
+with CLIC.Config.Locking;
+
 package body CLIC.Config.Load is
 
    package Trace renames Simple_Logging;
@@ -20,6 +22,11 @@ package body CLIC.Config.Load is
                         Path   :        String;
                         Check  :        Check_Import := null)
    is
+      Lock  : constant Locking.Locks.Lock :=
+                Locking.Lock (Path, Locking.Locks.Shared)
+        with Unreferenced;
+      --  Held while reading, so the file isn't changed meanwhile
+
       Table : constant TOML_Value := Load_TOML_File (Path);
    begin
       C.Import (Table, Origin, Check => Check);
