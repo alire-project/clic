@@ -1,4 +1,4 @@
-with Ada.Text_IO; use Ada.Text_IO;
+with GNAT.IO; use GNAT.IO;
 
 with AAA.Strings;
 

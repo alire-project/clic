@@ -1,5 +1,5 @@
 with CLIC.TTY; use CLIC.TTY;
-with Ada.Text_IO; use Ada.Text_IO;
+with GNAT.IO; use GNAT.IO;
 
 package body CLIC_Ex.Commands.TTY is
 

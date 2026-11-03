@@ -11,9 +11,9 @@ package body CLIC_Ex.Commands.Double_Dash is
    is
    begin
       if Upper_Case then
-         Ada.Text_IO.Put_Line (AAA.Strings.To_Upper_Case (Args.Flatten));
+         GNAT.IO.Put_Line (AAA.Strings.To_Upper_Case (Args.Flatten));
       else
-         Ada.Text_IO.Put_Line (Args.Flatten);
+         GNAT.IO.Put_Line (Args.Flatten);
       end if;
 
    end Execute;
