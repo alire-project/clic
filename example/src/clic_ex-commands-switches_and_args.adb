@@ -1,4 +1,4 @@
-with Ada.Text_IO;
+with GNAT.IO;
 
 package body CLIC_Ex.Commands.Switches_And_Args is
 
@@ -10,7 +10,7 @@ package body CLIC_Ex.Commands.Switches_And_Args is
      (Cmd : in out Instance; Args : AAA.Strings.Vector)
    is
    begin
-      Ada.Text_IO.Put_Line (Args.Flatten);
+      GNAT.IO.Put_Line (Args.Flatten);
    end Execute;
 
 end CLIC_Ex.Commands.Switches_And_Args;

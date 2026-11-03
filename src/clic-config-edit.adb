@@ -45,7 +45,11 @@ package body CLIC.Config.Edit is
       --  Create the directory for the config file, in case it doesn't exists
       Create_Path (Containing_Directory (Path));
 
-      Create (File, Out_File, Path);
+      --  TOML is always UTF-8, but by default the encoding of a file is that
+      --  of the main program, whatever the -gnatW8 used to compile this
+      --  library. See ../gnat.adc
+
+      Create (File, Out_File, Path, Form => "WCEM=8");
       Trace.Debug ("Write config: '" & TOML.Dump_As_String (Table) & "'");
       Put (File, WW (TOML.Dump_As_String (Table)));
       Close (File);

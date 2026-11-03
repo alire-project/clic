@@ -34,7 +34,7 @@
 
 with Ada.Characters.Handling;    use Ada.Characters.Handling;
 with Ada.Strings.Unbounded;
-with Ada.Text_IO;                use Ada.Text_IO;
+with GNAT.IO;                    use GNAT.IO;
 with Ada.Unchecked_Deallocation;
 
 with GNAT.Directory_Operations; use GNAT.Directory_Operations;

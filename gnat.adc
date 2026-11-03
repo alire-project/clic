@@ -1,0 +1,11 @@
+pragma Restrictions (No_Dependence => Ada.Text_IO);
+--  The -gnatW8 used to compile this library only decides how its own sources
+--  are read. The encoding of Ada.Text_IO and its wide variants at run time is
+--  decided by the main program, and with it Ada.Text_IO garbles any text that
+--  already is in UTF-8. See AAA.Console_IO for details. So, with any main:
+--
+--  * For the console, use AAA.Console_IO, or GNAT.IO to only write.
+--  * For files, use Ada.Wide_Wide_Text_IO with Form => "WCEM=8".
+--
+--  This file is only for the library. In a main program, the binder checks the
+--  restriction in all the units of the program, dependencies included.

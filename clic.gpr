@@ -17,6 +17,7 @@ project Clic is
 
    package Compiler is
       for Default_Switches ("Ada") use Clic_Config.Ada_Compiler_Switches;
+      for Local_Configuration_Pragmas use "gnat.adc";
    end Compiler;
 
    package Binder is

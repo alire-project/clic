@@ -1,5 +1,7 @@
-with Ada.Text_IO;
+with AAA.Console_IO;
+
 with Ada.Characters.Handling;
+with Ada.IO_Exceptions;
 
 with Simple_Logging;
 
@@ -7,7 +9,10 @@ with CLIC.TTY;
 
 package body CLIC.User_Input is
 
-   package TIO renames Ada.Text_IO;
+   package Console renames AAA.Console_IO;
+   --  Not Ada.Text_IO, which depends on the encoding of the main program and
+   --  not on the -gnatW8 used to compile this library. See ../gnat.adc
+
    package Char renames Ada.Characters.Handling;
 
    User_Input_Error : exception;
@@ -27,22 +32,6 @@ package body CLIC.User_Input is
        when No     => "no",
        when Always => "always");
 
-   ---------------
-   -- Flush_TTY --
-   ---------------
-
-   procedure Flush_TTY is
-      C : Character;
-      Available : Boolean;
-   begin
-      loop
-         TIO.Get_Immediate (C, Available);
-         exit when not Available;
-      end loop;
-   exception
-      when TIO.End_Error => null;
-   end Flush_TTY;
-
    -------------------------
    -- Print_Valid_Answers --
    -------------------------
@@ -51,14 +40,14 @@ package body CLIC.User_Input is
    begin
       for Kind in Answer_Kind loop
          if Valid (Kind) then
-            TIO.Put ("["
+            Console.Put ("["
                      & (if Kind = Default
                        then TTY.Bold ("" & Answer_Char (Kind))
                        else           "" & Answer_Char (Kind))
                      & "] " & Img (Kind) & "  ");
          end if;
       end loop;
-      TIO.Put ("(default is " & TTY.Bold (Img (Default)) & ") ");
+      Console.Put ("(default is " & TTY.Bold (Img (Default)) & ") ");
    end Print_Valid_Answers;
 
    -----------
@@ -76,13 +65,13 @@ package body CLIC.User_Input is
 
       function Use_Default return Answer_Kind is
       begin
-         TIO.Put_Line ("Using default: " & Img (Default));
+         Console.Put_Line ("Using default: " & Img (Default));
          return Default;
       end Use_Default;
 
    begin
       loop
-         TIO.Put_Line (Question);
+         Console.Put_Line (Question);
 
          if Not_Interactive or else not TTY.Is_TTY then
             return Use_Default;
@@ -90,13 +79,13 @@ package body CLIC.User_Input is
 
          --  Flush the input that the user may have entered by mistake before
          --  the question is asked.
-         Flush_TTY;
+         Console.Discard_Input;
 
          Print_Valid_Answers (Valid, Default);
 
          --  Get user input
          declare
-            Input : constant String := TIO.Get_Line;
+            Input : constant String := Console.Get_Line;
          begin
 
             --  Empty line means the user pressed enter without any answer
@@ -127,11 +116,11 @@ package body CLIC.User_Input is
                end if;
             end loop;
 
-            TIO.Put_Line ("Invalid answer.");
+            Console.Put_Line ("Invalid answer.");
          end;
       end loop;
    exception
-      when TIO.End_Error =>
+      when Ada.IO_Exceptions.End_Error =>
          --  This happens on the user hitting Ctrl-D, and no further
          --  input can be obtained as stdin is closed
          raise User_Interrupt;
@@ -171,7 +160,7 @@ package body CLIC.User_Input is
          --  Print the choices proper
 
          for I in Page_Start .. Page_End loop
-            TIO.Put_Line
+            Console.Put_Line
               ("  "
                &  (if I = Page_Start
                    then TTY.Bold ("" & Answers (I - Page_Start + 1))
@@ -182,15 +171,16 @@ package body CLIC.User_Input is
          --  And the pager if needed
 
          if Use_Pager then
-            TIO.Put_Line (TTY.Emph ("  " & Answers (Page_End - Page_Start + 2))
-                          & ". (See more choices...)");
+            Console.Put_Line
+              (TTY.Emph ("  " & Answers (Page_End - Page_Start + 2))
+               & ". (See more choices...)");
          end if;
       end Print_Choices;
 
    begin
       loop
          begin
-            TIO.Put_Line (Question);
+            Console.Put_Line (Question);
 
             if Not_Interactive then
                Simple_Logging.Info
@@ -201,14 +191,14 @@ package body CLIC.User_Input is
 
             --  Flush the input that the user may have entered by mistake
             --  before the question is asked.
-            Flush_TTY;
+            Console.Discard_Input;
 
             Print_Choices;
-            TIO.Put_Line ("Enter your choice index (first is default): ");
-            TIO.Put ("> ");
+            Console.Put_Line ("Enter your choice index (first is default): ");
+            Console.Put ("> ");
 
             declare
-               Answer_Line : constant String := TIO.Get_Line;
+               Answer_Line : constant String := Console.Get_Line;
                Answer_Char : Character;
                Answer_Pos  : Natural := 0;
                Extra       : constant Natural := (if Use_Pager then 1 else 0);
@@ -253,7 +243,7 @@ package body CLIC.User_Input is
                end if;
             end;
          exception
-            when TIO.End_Error =>
+            when Ada.IO_Exceptions.End_Error =>
                --  This happens on the user hitting Ctrl-D, and no further
                --  input can be obtained as stdin is closed
                Simple_Logging.Debug ("End_Error caught.");
@@ -296,7 +286,7 @@ package body CLIC.User_Input is
 
       function Use_Default return String is
       begin
-         TIO.Put_Line ("Using default: '" & Default & "'");
+         Console.Put_Line ("Using default: '" & Default & "'");
          return Default;
       end Use_Default;
 
@@ -305,26 +295,27 @@ package body CLIC.User_Input is
       --------------
 
       function Is_Valid (Str : String) return Boolean
-      is (Validation = null or else Validation (Str));
+      is (Console.Is_UTF_8 (Str)
+          and then (Validation = null or else Validation (Str)));
 
    begin
       loop
-         TIO.Put_Line (Question & " (" & "default: '" & Default & "')");
+         Console.Put_Line (Question & " (" & "default: '" & Default & "')");
 
          if Not_Interactive or else not TTY.Is_TTY then
             return Use_Default;
          end if;
 
          --  Print a prompt
-         TIO.Put ("> ");
+         Console.Put ("> ");
 
          --  Flush the input that the user may have entered by mistake before
          --  the question is asked.
-         Flush_TTY;
+         Console.Discard_Input;
 
          --  Get user input
          declare
-            Input : constant String := TIO.Get_Line;
+            Input : constant String := Console.Get_Line;
          begin
 
             --  Empty line means the user pressed enter without any answer
@@ -338,11 +329,11 @@ package body CLIC.User_Input is
                return Input;
             end if;
 
-            TIO.Put_Line ("Invalid answer.");
+            Console.Put_Line ("Invalid answer.");
          end;
       end loop;
    exception
-      when TIO.End_Error =>
+      when Ada.IO_Exceptions.End_Error =>
          --  This happens on the user hitting Ctrl-D, and no further
          --  input can be obtained as stdin is closed
          raise User_Interrupt;
@@ -353,15 +344,17 @@ package body CLIC.User_Input is
    -----------------------
 
    procedure Continue_Or_Abort is
-      Foo : String := "bar";
-      Bar : Integer;
    begin
       if Not_Interactive then
          Simple_Logging.Detail ("Non-interactive session, continuing");
       else
-         Flush_TTY;
-         TIO.Put_Line ("Press Enter to continue or Ctrl-C to abort");
-         TIO.Get_Line (Foo, Bar);
+         Console.Discard_Input;
+         Console.Put_Line ("Press Enter to continue or Ctrl-C to abort");
+         declare
+            Unused : constant String := Console.Get_Line;
+         begin
+            null;
+         end;
       end if;
    end Continue_Or_Abort;
 
@@ -379,13 +372,13 @@ package body CLIC.User_Input is
       return Answer_With_Input
    is
    begin
-      TIO.Put_Line (Question);
+      Console.Put_Line (Question);
       loop
-         TIO.Put (Prompt);
+         Console.Put (Prompt);
          declare
-            Input : constant String := TIO.Get_Line;
+            Input : constant String := Console.Get_Line;
          begin
-            if Is_Valid (Input) then
+            if Console.Is_UTF_8 (Input) and then Is_Valid (Input) then
                declare
                   Result : Answer_With_Input := (Input'Length, Input, No);
                begin
