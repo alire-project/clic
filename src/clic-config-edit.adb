@@ -5,6 +5,7 @@ with AAA.Strings;
 with AAA.Directories;
 
 with CLIC.Config.Load;
+with CLIC.Config.Locking;
 
 with Simple_Logging;
 
@@ -142,6 +143,11 @@ package body CLIC.Config.Edit is
    is
       use AAA.Directories;
 
+      Lock : constant Locking.Locks.Lock :=
+               Locking.Lock (Path, Locking.Locks.Exclusive)
+        with Unreferenced;
+      --  Held from reading the file until it is replaced
+
       Tmp : Replacer := New_Replacement (File              => Path,
                                          Backup            => False,
                                          Allow_No_Original => True);
@@ -179,6 +185,11 @@ package body CLIC.Config.Edit is
                  return Boolean
    is
       use AAA.Directories;
+
+      Lock : constant Locking.Locks.Lock :=
+               Locking.Lock (Path, Locking.Locks.Exclusive)
+        with Unreferenced;
+      --  Held from reading the file until it is replaced
 
       Tmp : Replacer := New_Replacement (File              => Path,
                                          Backup            => False,
